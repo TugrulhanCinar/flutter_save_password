@@ -106,29 +106,8 @@ extension BoxDecorationExtension on BuildContext {
   BorderRadius get borderLowRadiusHCircular => BorderRadius.circular(10.0);
 }
 
-extension AppBarExtension on BuildContext {
-  AppBar appBar(
-    String title, {
-    bool centerTitle: true,
-    List<Widget> actions,
-    Widget leading,
-    Color color: Colors.deepOrange,
-  }) =>
-      AppBar(
-        title: Text(title),
-        backgroundColor: color,
-        leading: leading,
-        centerTitle: centerTitle,
-        actions: actions,
-      );
-}
-
 extension EmptyWidget on BuildContext {
-  Widget get emptylowMediumValueWidget => SizedBox(
-        height: lowMediumValue,
-      );
+  Widget get emptylowMediumValueWidget => SizedBox(height: lowMediumValue);
 
-  Widget get emptyMediumValueWidget => SizedBox(
-        height: mediumValue,
-      );
+  Widget get emptyMediumValueWidget => SizedBox(height: mediumValue);
 }

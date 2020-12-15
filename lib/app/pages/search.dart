@@ -1,19 +1,25 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_save_password/app/common__widget/account_model.dart';
 import 'package:flutter_save_password/models/account_model.dart';
-import 'package:flutter_save_password/extensions/context_extension.dart';
 import 'package:flutter_save_password/view_model/save_password_view_model.dart';
+import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
+import 'file:///E:/flutterProject/flutter_canli_skor/lib/extensions/context_extension.dart';
 
-class PasswordSearch extends SearchDelegate<Account> {
-
+class AccountSearch extends SearchDelegate<Account> {
+  List<Account> _accounts;
   final BuildContext context;
+  AccountSearch(this.context);
 
-  PasswordSearch(this.context);
+  final formatter = DateFormat('dd-MM-yyyy');
+
 
   @override
   List<Widget> buildActions(BuildContext context) {
-    return [buildActionsIconButton];
+    //addAllCurrentMatch();
+    return [
+      buildActionsIconButton
+    ];
   }
 
   IconButton get buildActionsIconButton {
@@ -25,19 +31,20 @@ class PasswordSearch extends SearchDelegate<Account> {
     );
   }
 
+
+
   @override
   Widget buildLeading(BuildContext context) {
-
     return buildLeadingIconButton(context);
   }
 
   IconButton buildLeadingIconButton(BuildContext context) {
     return IconButton(
-      icon: Icon(Icons.arrow_back),
-      onPressed: () {
-        close(context, null);
-      },
-    );
+    icon: Icon(Icons.arrow_back),
+    onPressed: () {
+      close(context, null);
+    },
+  );
   }
 
   @override
@@ -45,49 +52,44 @@ class PasswordSearch extends SearchDelegate<Account> {
     return null;
   }
 
-  //todo
   @override
   Widget buildSuggestions(BuildContext context) {
-    final passwordSaveViewModel = Provider.of<PasswordSaveViewModel>(this.context,listen: false);
-    var _accounts = passwordSaveViewModel.allAccount;
-    var myList = query.isEmpty
+    final passwordModel = Provider.of<PasswordSaveViewModel>(this.context);
+    _accounts = passwordModel.allAccount;
+    final mylist = query.isEmpty
         ? _accounts
         : _accounts
-        .where((element) =>
-        element.accountName.toLowerCase().contains(query.toLowerCase()))
-        .toList();
-    print("_accounts uzunluk: " + _accounts.length.toString());
-    return myList.isEmpty
+            .where(
+              (element) =>
+                  element.accountName.toLowerCase().contains(query.toLowerCase()))
+            .toList();
+    return mylist.isEmpty
         ? buildCenter(context)
-        : _buildSuggestionsListView(myList);
+        : _buildSuggestionsListView(mylist);
   }
 
   Center buildCenter(BuildContext context) {
     return Center(
-      child:
-          Text('No result Found...', style: context.theme.textTheme.headline5),
-    );
+          child: Text('No result Found...',
+              style: context.theme.textTheme.headline5
+                  .copyWith(color: Colors.black)),
+        );
   }
 
   ListView _buildSuggestionsListView(List<Account> mylist) {
     return ListView.separated(
-
-      itemCount: mylist.length,
-      itemBuilder: (BuildContext context, int index) {
-        return accountModel(context, mylist[index]);
-      },
-      separatorBuilder: (BuildContext context, int index) {
-        return context.customHighDivider;
-      },
-    );
+          shrinkWrap: true,
+          itemCount: mylist.length,
+          itemBuilder: (BuildContext context, int index) {
+            return AccountModelWidget(
+              account: mylist[index],
+              customTitle: mylist[index].folderName,
+            );
+          },
+          separatorBuilder: (BuildContext context, int index) {
+            return context.customDivider;
+          },
+        );
   }
 
-  AccountModelWidget accountModel(BuildContext context, Account account) {
-    return AccountModelWidget(
-      context: context,
-      account:account,
-      customTitle: account.folderName,
-
-    );
-  }
 }

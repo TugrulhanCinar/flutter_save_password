@@ -1,6 +1,12 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_save_password/app/common__widget/custom_alert_dialog.dart';
+import 'package:flutter_save_password/app/common__widget/custom_button.dart';
+import 'package:flutter_save_password/app/exceptions/log_in_exceptions.dart';
+import 'package:flutter_save_password/app/pages/auth_pages/sign_in_page.dart';
+import 'package:flutter_save_password/app/pages/home_page.dart';
 import 'package:flutter_save_password/extensions/context_extension.dart';
 import 'package:flutter_save_password/extensions/color_extension.dart';
 import 'package:flutter_save_password/view_model/user_view_model.dart';
@@ -12,7 +18,7 @@ class LoginPage extends StatefulWidget {
 }
 
 class _LoginPageState extends State<LoginPage> {
-  String email,password;
+  String email, password;
   final signInText = "Hemen Kayıt ol";
   bool obscureTextPassword = true;
   final userNameLabelText = "Mail";
@@ -22,7 +28,6 @@ class _LoginPageState extends State<LoginPage> {
 
   @override
   Widget build(BuildContext context) {
-
     return Scaffold(
       resizeToAvoidBottomInset: false,
       body: getViewModel(context).state == UserViewState.Busy
@@ -37,7 +42,6 @@ class _LoginPageState extends State<LoginPage> {
 //        margin: context.paddingAllLowMedium,
         child: loginItems,
       );
-
 
   Widget get loginItems => Form(
         key: _formKey,
@@ -83,29 +87,49 @@ class _LoginPageState extends State<LoginPage> {
 
   Widget get _logInButton => Container(
         width: context.width,
-        child: RaisedButton(
-          child: Text(
-            "Giriş",
-            style: context.theme.textTheme.headline6.copyWith(),
-          ),
-          color: Colors.white,
-          shape: roundedRectangleBorder,
-          onPressed: loginButtonOnTap,
+        child: MyCustomButton(
+          onTap: loginButtonOnTap,
+          buttonText: "Giriş",
         ),
       );
 
-  void loginButtonOnTap() async{
+  void loginButtonOnTap() async {
     if (_formKey.currentState.validate()) {
-      final UserViewModel _userViewModel = getViewModel(context,);
+      final UserViewModel _userViewModel = getViewModel(context);
       _formKey.currentState.save();
-      try{
-        await _userViewModel.signInWithEmailandPassword(email, password);
-      }on PlatformException catch(e){
-        //todo alert dialog göster
-        print("Giriş hatası: " + e.toString());
-      }
-
+      try {
+        var result = await _userViewModel.signInWithEmailandPassword(email, password);
+        if (result != null) {
+          Navigator.pushAndRemoveUntil(
+              context,
+              MaterialPageRoute(builder: (context) => HomePage()),
+              (Route<dynamic> route) => false);
+        }
+      } on FirebaseAuthException catch (e) {
+        showCustomDialog(LoginExceptions.showException(e.message));
+      } catch (e) {}
     }
+  }
+
+  showCustomDialog(String text) {
+    MyCustomDialog(
+      title: Center(child: Text("Hata")),
+      content: Text(text),
+      actions: [
+        Container(
+          padding: context.paddingAllLowMedium,
+          width: context.width,
+          child: RaisedButton(
+            color: Colors.red,
+            shape: roundedRectangleBorder,
+            child: Text("Tamam"),
+            onPressed: () {
+              Navigator.pop(context);
+            },
+          ),
+        )
+      ],
+    ).goster(context);
   }
 
   RoundedRectangleBorder get roundedRectangleBorder =>
@@ -119,24 +143,27 @@ class _LoginPageState extends State<LoginPage> {
               .bodyText1
               .copyWith(color: Colors.lightBlueAccent),
         ),
-        onTap:_signInButtonOnTap,
+        onTap: _signInButtonOnTap,
       );
 
-  _signInButtonOnTap(){}
-  Widget get _userNameTextFormField => TextFormField(
-    keyboardType: TextInputType.emailAddress,
+  _signInButtonOnTap() {
+    Navigator.push(
+        context, MaterialPageRoute(builder: (context) => SigninPage()));
+  }
 
+  Widget get _userNameTextFormField => TextFormField(
+        keyboardType: TextInputType.emailAddress,
         style: TextStyle(color: Colors.white),
         decoration: context.customInputDecoration(userNameLabelText),
-    onSaved: (currentMail){
-      email = currentMail;
-    },
+        onSaved: (currentMail) {
+          email = currentMail;
+        },
       );
 
   Widget get _passwordTextFormField => TextFormField(
         style: TextStyle(color: Colors.white),
         obscureText: obscureTextPassword,
-        onSaved: (currentPass){
+        onSaved: (currentPass) {
           password = currentPass;
         },
         decoration: context.customInputDecoration(
@@ -163,26 +190,16 @@ class _LoginPageState extends State<LoginPage> {
       obscureTextPassword = !obscureTextPassword;
     });
   }
-  getViewModel(BuildContext context){
-    final _userViewModel = Provider.of<UserViewModel>(context,listen: false);
+
+  getViewModel(BuildContext context) {
+    final _userViewModel = Provider.of<UserViewModel>(context, listen: false);
     return _userViewModel;
   }
 
   BoxDecoration get boxDecoration => BoxDecoration(
-        //color: Colors.white,
         gradient: linearGradient,
-        //borderRadius: context.borderHighRadiusHCircular,
         boxShadow: boxShadow,
       );
-
-  LinearGradient get linearGradient => LinearGradient(
-        begin: Alignment.bottomLeft,
-        end: Alignment.topRight,
-        tileMode: TileMode.clamp,
-        colors: gradientColorList,
-      );
-
-
   List<BoxShadow> get boxShadow {
     return [
       BoxShadow(
@@ -193,6 +210,14 @@ class _LoginPageState extends State<LoginPage> {
       ),
     ];
   }
+
+  LinearGradient get linearGradient => LinearGradient(
+        begin: Alignment.bottomLeft,
+        end: Alignment.topRight,
+        tileMode: TileMode.clamp,
+        colors: gradientColorList,
+      );
+
 
 
   List<Color> get gradientColorList => [

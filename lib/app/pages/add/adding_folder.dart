@@ -1,19 +1,20 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_save_password/app/common__widget/custom_app_bar.dart';
 import 'package:flutter_save_password/extensions/context_extension.dart';
 import 'package:flutter_save_password/extensions/color_extension.dart';
 import 'package:flutter_save_password/models/folder_model.dart';
 import 'package:flutter_save_password/view_model/save_password_view_model.dart';
 import 'package:provider/provider.dart';
 
-class AddFolderPage extends StatefulWidget {
+class AddingFolderPage extends StatefulWidget {
   @override
-  _AddFolderPageState createState() => _AddFolderPageState();
+  _AddingFolderPageState createState() => _AddingFolderPageState();
 }
 
-class _AddFolderPageState extends State<AddFolderPage> {
+class _AddingFolderPageState extends State<AddingFolderPage> {
   final buttonText = "Oluştur";
   final labelText = "Dosya ismi";
-  final appBarText = "Klasör Oluştur";
+  final appBarTitle = "Klasör Oluştur";
   final _scafoldKey = GlobalKey<ScaffoldState>();
   final _textEditingController = TextEditingController();
   int selectedIndex = 0;
@@ -22,10 +23,12 @@ class _AddFolderPageState extends State<AddFolderPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       key: _scafoldKey,
-      appBar: context.appBar(appBarText),
+      appBar: appBar,
       body: _columnBody,
     );
   }
+
+  Widget get appBar => CustomAppBar(appBarTitle);
 
   Widget get _columnBody => Container(
         padding: context.paddingAllLowMedium,
@@ -93,13 +96,31 @@ class _AddFolderPageState extends State<AddFolderPage> {
           .values
           .toList());
 
-  void _createButtonOnTap() {
-    if (_textEditingController.text.length > 1 &&
-        _textEditingController.text.length < 15) {
+  SnackBar snackBar(String text) =>  SnackBar(
+    backgroundColor: Theme.of(context).colorScheme.genelRenk,
+    content: Row(
+      children: <Widget>[
+        Icon(Icons.thumb_up),
+        SizedBox(
+          width: 20,
+        ),
+        Expanded(
+          child: Text(text),
+        ),
+      ],
+    ),
+  );
+
+  void _createButtonOnTap() async {
+    String text = _textEditingController.text;
+    if (text.length > 1 && text.length < 15) {
       final folder = Provider.of<PasswordSaveViewModel>(context, listen: false);
-      var selectedColor =
-          context.theme.colorScheme.allFolderColor[selectedIndex];
-      folder.saveFolder(Folder(_textEditingController.text, selectedColor));
+      var selectedColor = context.theme.colorScheme.allFolderColor[selectedIndex];
+      var result = await folder.saveFolder(Folder(_textEditingController.text, selectedColor));
+      if (result) {
+        Navigator.pop(context);
+      }
     }
   }
+
 }

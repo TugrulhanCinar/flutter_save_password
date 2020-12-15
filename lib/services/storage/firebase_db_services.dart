@@ -1,11 +1,43 @@
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter_save_password/models/account_model.dart';
 import 'package:flutter_save_password/models/folder_model.dart';
+import 'package:flutter_save_password/models/user_model.dart';
 import 'db_base.dart';
 
 class FirestoreDBService implements DBBase {
   final databaseReference = FirebaseDatabase.instance.reference();
 
+  Future<bool> writeUserData(UserModel userModel) async {
+    try {
+      await databaseReference
+          .child('users')
+          .child(userModel.userID)
+          .child("user_data")
+          .set(userModel.toMap());
+      return true;
+    } catch (e) {
+      print("writeUserData hata: " + e.toString());
+      return false;
+    }
+  }
+
+  Future<UserModel> readUserData(String userID) async {
+    UserModel user;
+    try {
+      var snapshot = await databaseReference
+          .child("users")
+          .child(userID)
+          .child("user_data")
+          .once();
+      user = UserModel.fromMap(snapshot.value);
+      return user;
+    } catch (e) {
+      print("readUserData hata: " + e.toString());
+      return null;
+    }
+  }
+
+  ///*********************************************
 
   @override
   Future<bool> createFolder(Folder folder, String userID) async {
@@ -36,14 +68,13 @@ class FirestoreDBService implements DBBase {
       var result = await snapshot.value.values as Iterable;
       for (var item in result) {
         folderList.add(Folder.fromMap(item));
-
       }
     }
     return folderList;
   }
 
   @override
-  Future<bool> deleteFolder(Folder folder, String userID) async{
+  Future<bool> deleteFolder(Folder folder, String userID) async {
     try {
       await databaseReference
           .child('users')
@@ -60,8 +91,8 @@ class FirestoreDBService implements DBBase {
   }
 
   @override
-  Future<bool> updateFolder(Folder folder,Folder newFolder, String userID) async{
-    // TODO: implement updateFolder
+  Future<bool> updateFolder(
+      Folder folder, Folder newFolder, String userID) async {
     try {
       await databaseReference
           .child('users')
@@ -76,13 +107,11 @@ class FirestoreDBService implements DBBase {
     }
   }
 
-
   ///***********************************
 
   @override
   Future<bool> updateAccount(
       Account account, Account newAccount, String userID) async {
-    // TODO: implement updateAccount
     try {
       await databaseReference
           .child('users')
@@ -100,7 +129,7 @@ class FirestoreDBService implements DBBase {
   }
 
   @override
-  Future<bool> deleteAccount(Account account,String userID) async{
+  Future<bool> deleteAccount(Account account, String userID) async {
     try {
       await databaseReference
           .child('users')
@@ -108,7 +137,8 @@ class FirestoreDBService implements DBBase {
           .child("folders")
           .child(account.folderID)
           .child('accounts')
-          .child(account.accountID).remove();
+          .child(account.accountID)
+          .remove();
     } catch (e) {
       print("Hata oluştu firebase_db_services");
       print(e.toString());
@@ -118,8 +148,7 @@ class FirestoreDBService implements DBBase {
   }
 
   @override
-  Future<bool> saveAccount(
-      Account account, String userID) async {
+  Future<bool> saveAccount(Account account, String userID) async {
     try {
       await databaseReference
           .child('users')
@@ -136,6 +165,4 @@ class FirestoreDBService implements DBBase {
     }
     return true;
   }
-
-
 }

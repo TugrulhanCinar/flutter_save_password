@@ -6,17 +6,17 @@ class FirebaseAuthServices implements AuthBase {
   final FirebaseAuth _firebaseAuth = FirebaseAuth.instance;
 
   @override
-  Future<UserModel> signInWithEmailandPassword(String email, String password) async {
+  Future<UserModel> signInWithEmailandPassword(
+      String email, String password) async {
     UserCredential user = await _firebaseAuth.signInWithEmailAndPassword(
         email: email, password: password);
-    return  _userFromFirebase(user.user);
+    return _userFromFirebase(user.user);
   }
 
   @override
   Future<UserModel> getCurrentUser() async {
-    print("Çalıştı firebase auth get current User");
     try {
-      var user =  _firebaseAuth.currentUser;
+      var user = _firebaseAuth.currentUser;
       return _userFromFirebase(user);
     } catch (e) {
       print("HATA CURRENT USER" + e.toString());
@@ -25,23 +25,33 @@ class FirebaseAuthServices implements AuthBase {
   }
 
   @override
-  Future<bool> signOut() {
-    // TODO: implement signOut
-    throw UnimplementedError();
+  Future<bool> signOut() async {
+    try {
+      await _firebaseAuth.signOut();
+      return true;
+    } catch (e) {
+      print("HATA CURRENT USER" + e.toString());
+      return false;
+    }
   }
 
   @override
-  Future<UserModel> createUserWithEmailandPassword(String email, String sifre) {
-    // TODO: implement createUserWithEmailandPassword
-    //_firebaseAuth.createUserWithEmailAndPassword(email: null, password: null);
-
-    throw UnimplementedError();
+  Future<UserModel> createUserWithEmailandPassword(UserModel userModel) async {
+    var result = await _firebaseAuth.createUserWithEmailAndPassword(
+      email: userModel.userEmail,
+      password: userModel.userPassword,
+    );
+    return _userFromFirebase(result.user);
   }
 
   UserModel _userFromFirebase(User user) {
-
     if (user != null)
-      return UserModel(user.email, user.uid, user.metadata.creationTime);
-    else return null;
+      return UserModel.fromFireBase(
+        userCreateTime: user.metadata.creationTime,
+        userEmail: user.email,
+        userID: user.uid,
+      );
+    else
+      return null;
   }
 }

@@ -1,53 +1,52 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/painting.dart';
+import 'package:flutter_save_password/app/common__widget/custom_alert_dialog.dart';
+import 'package:flutter_save_password/app/common__widget/custom_app_bar.dart';
 import 'package:flutter_save_password/app/common__widget/folder_container_widget.dart';
-import 'package:flutter_save_password/app/pages/add_folder_page.dart';
-import 'package:flutter_save_password/app/pages/details_page.dart';
-import 'package:flutter_save_password/app/pages/search.dart';
-import 'package:flutter_save_password/extensions/context_extension.dart';
-import 'package:flutter_save_password/models/account_model.dart';
+import 'file:///E:/flutterProject/flutter_save_password/lib/app/pages/add/adding_folder.dart';
+import 'package:flutter_save_password/app/pages/favorite_page.dart';
+import 'file:///E:/flutterProject/flutter_save_password/lib/app/pages/details/folder_detail_page.dart';
 import 'package:flutter_save_password/models/folder_model.dart';
+import 'package:flutter_save_password/extensions/color_extension.dart';
+import 'package:flutter_save_password/extensions/context_extension.dart';
 import 'package:flutter_save_password/view_model/save_password_view_model.dart';
+import 'package:flutter_save_password/view_model/user_view_model.dart';
 import 'package:provider/provider.dart';
-import 'favorite_accounts.dart';
+import 'landing_page.dart';
+import 'profile_page.dart';
+import 'search.dart';
 
+// ignore: must_be_immutable
 class HomePage extends StatelessWidget {
-  final appBarTitle = "Title";
-  final String userName = "Tuğrulhan Çınar";
-  final String userNickName = "tugrul@tugrul.com";
-  final String favoriteTitleText = "Favoriler";
-  final String proileTitleText = "Profil";
-  List<Folder> folders;
-  List<Account> allAccounts;
-  Folder currentFolder;
+  final String appBarTitle = "App bar Title";
+  final String drawerFavoriteTitle = "Favoriler";
+  final String profileFavoriteTitle = "Profile";
+  final String signOutFavoriteTitle = "Çıkış yap";
+  List<Folder> folderList;
 
   @override
   Widget build(BuildContext context) {
+
     return Scaffold(
-      //todo
       drawer: buildDrawer(context),
-      appBar: context.appBar(appBarTitle, actions: appBarActions(context)),
       floatingActionButton: buildFloatingActionButton(context),
-      body: Consumer<PasswordSaveViewModel>(builder: (context, cart, child) {
-        if (cart.state == PasswordState.Busy) {
-          return buildCircularProgressIndicator;
-        } else {
-          folders = cart.folders;
-          allAccounts = cart.allAccount;
-          if (folders.length > 1) {
-            return Center(
-              child: Text("Hiç kullanıcı yok "),
-            );
-          } else {
-            return buildGridView();
-          }
-        }
-      }),
+      appBar: buildCustomAppBar(context),
+      body: buildBody,
     );
   }
 
-  void wait() async {
-    await Future.delayed(Duration(seconds: 1));
-  }
+  Consumer<PasswordSaveViewModel> get buildBody =>
+      Consumer<PasswordSaveViewModel>(
+        builder: (context, cart, child) {
+          cart.folders ?? cart.fetchFolders();
+          if (cart.state == PasswordState.Busy) {
+            return circularProgressIndicator;
+          } else {
+            folderList = cart.folders;
+            return buildGridView;
+          }
+        },
+      );
 
   Drawer buildDrawer(BuildContext context) {
     return Drawer(
@@ -55,165 +54,179 @@ class HomePage extends StatelessWidget {
         mainAxisAlignment: MainAxisAlignment.spaceAround,
         children: [
           Expanded(
-            flex: 90,
-            child: buildDrawerBody(context),
+            child: ListView(
+              children: [
+                buildDrawerHeader(context),
+                favoritePageIconButton(context),
+                profilePageIconButton(context),
+              ],
+            ),
           ),
-          Expanded(
-            flex: 10,
-            child: signOutButton(context),
-          ),
+          signOutPageIconButton(context),
         ],
       ),
     );
   }
 
-  ListView buildDrawerBody(BuildContext context) {
-    return ListView(
-      padding: EdgeInsets.zero,
-      children: [
-        buildDrawerHeader(context),
-        drawerProfileItem,
-        context.customLowDivider,
-        drawerFavoriteItem(context),
-        context.customLowDivider,
-      ],
-    );
-  }
-
-  RaisedButton signOutButton(BuildContext context) {
-    return RaisedButton(
-      color: Colors.white,
-      onPressed: sigonOutButtonOnTap(context),
-      child: signOutButtonRow,
-    );
-  }
-
-  Row get signOutButtonRow {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-      children: [
-        Text("Çıkış yap"),
-        Icon(Icons.exit_to_app),
-      ],
-    );
-  }
-
-  ListTile get drawerProfileItem {
+  ListTile signOutPageIconButton(BuildContext context) {
     return ListTile(
-      title: Text(proileTitleText),
-      leading: Icon(Icons.account_circle),
-      onTap: () => print("Profil"),
+      title: Text(signOutFavoriteTitle),
+      leading: Icon(Icons.exit_to_app),
+      onTap: () {
+        try {
+          Provider.of<UserViewModel>(context, listen: false).signOut();
+          Navigator.pushAndRemoveUntil(
+              context,
+              MaterialPageRoute(builder: (context) => LangingPage()),
+              (Route<dynamic> route) => false);
+        } catch (e) {
+          MyCustomDialog(
+            title: Center(child: Text("Hata")),
+            content: Text("Bir hata oluştu: " + e.message.toString()),
+            actions: [
+              Container(
+                padding: context.paddingAllLowMedium,
+                width: context.width,
+                child: RaisedButton(
+                  color: Colors.red,
+                  shape: roundedRectangleBorder(context),
+                  child: Text("Tamam"),
+                  onPressed: () {
+                    Navigator.pop(context);
+                  },
+                ),
+              )
+            ],
+          ).goster(context);
+        }
+      },
     );
   }
 
-  ListTile drawerFavoriteItem(BuildContext context) {
+  RoundedRectangleBorder roundedRectangleBorder(BuildContext context) =>
+      RoundedRectangleBorder(borderRadius: context.borderHighRadiusHCircular);
+
+  ListTile profilePageIconButton(BuildContext context) {
     return ListTile(
-      title: Text(favoriteTitleText),
-      leading: Icon(Icons.save),
-      onTap: drawerFavoriteItemOnTap(context),
+      title: Text(profileFavoriteTitle),
+      leading: Icon(Icons.person),
+      onTap: () {
+        Navigator.pop(context);
+        Navigator.push(
+            context, MaterialPageRoute(builder: (context) => ProfilePage()));
+      },
+    );
+  }
+
+  ListTile favoritePageIconButton(BuildContext context) {
+    return ListTile(
+      title: Text(drawerFavoriteTitle),
+      leading: Icon(Icons.favorite),
+      onTap: () {
+        Navigator.pop(context);
+        Navigator.push(
+            context, MaterialPageRoute(builder: (context) => FavoritePage()));
+      },
     );
   }
 
   DrawerHeader buildDrawerHeader(BuildContext context) {
     return DrawerHeader(
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        mainAxisAlignment: MainAxisAlignment.end,
-        children: drawerHeaderChilderen(context),
-      ),
-      decoration: BoxDecoration(color: Colors.deepOrange),
+      child: buildDrawerHeaderItem(context),
+      decoration: buildDrawerHeaderBoxDecoration(context),
     );
   }
 
-  List<Widget> drawerHeaderChilderen(BuildContext context) {
-    return [
-      ListTile(
-        title: Text(
-          userName,
-          style: Theme.of(context)
-              .textTheme
-              .headline5
-              .copyWith(color: Colors.white),
-        ),
-        subtitle: Text(
-          userNickName,
-          style: Theme.of(context)
-              .textTheme
-              .bodyText2
-              .copyWith(color: Colors.white),
-        ),
-      ),
-    ];
+  BoxDecoration buildDrawerHeaderBoxDecoration(BuildContext context) {
+    return BoxDecoration(
+      color: Theme.of(context).colorScheme.genelRenk,
+      borderRadius: BorderRadius.only(bottomRight: Radius.circular(30.0)),
+    );
   }
 
-  Center get buildCircularProgressIndicator =>
+  Column buildDrawerHeaderItem(BuildContext context) => Column(
+        mainAxisAlignment: MainAxisAlignment.end,
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          ListTile(
+            title: buildDrawerHeaderItemTitle(context),
+            subtitle: buildDrawerHeaderItemSubtitle(context),
+          ),
+        ],
+      );
+
+  Text buildDrawerHeaderItemSubtitle(BuildContext context) {
+    return Text(
+      Provider.of<UserViewModel>(context).user.userEmail,
+      style: Theme.of(context).textTheme.caption.copyWith(color: Colors.white),
+    );
+  }
+
+  Text buildDrawerHeaderItemTitle(BuildContext context) {
+    return Text(
+      Provider.of<UserViewModel>(context).user.userName,
+      style: Theme.of(context).textTheme.bodyText2,
+    );
+  }
+
+  GridView get buildGridView => GridView.builder(
+        gridDelegate: buildSliverGridDelegateWithFixedCrossAxisCount,
+        itemCount: folderList.length,
+        itemBuilder: (context, index) {
+          return buildFolderContainer(index, context);
+        },
+      );
+
+  Widget buildFolderContainer(index, context) => FolderContainer(
+        color: folderList[index].folderColor,
+        containerName: folderList[index].folderName,
+        onTap: () {
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+                builder: (context) => FolderDetailPage(
+                      folder: folderList[index],
+                      folderIndex: index,
+                    )),
+          );
+        },
+      );
+
+  Widget get circularProgressIndicator =>
       Center(child: CircularProgressIndicator());
 
-  GridView buildGridView() {
-    return GridView.builder(
-      itemCount: folders.length,
-      itemBuilder: (context, index) {
-        currentFolder = folders[index];
-        return buildFolderContainer(index, context);
-      },
-      gridDelegate: buildSliverGridDelegateWithFixedCrossAxisCount,
-    );
-  }
+  CustomAppBar buildCustomAppBar(BuildContext context) =>
+      CustomAppBar(appBarTitle, actions: appBarActions(context));
 
-  FolderContainer buildFolderContainer(int index, BuildContext context) {
-    return FolderContainer(
-      color: currentFolder.folderColor,
-      containerName: currentFolder.folderName,
-      onTap: folderContainerOnTap(context, index),
+  List<Widget> appBarActions(BuildContext context) => [
+        IconButton(
+          icon: Icon(
+            Icons.search,
+            color: Colors.white,
+          ),
+          onPressed: () {
+            showSearch(
+              context: context,
+              delegate: AccountSearch(context),
+            );
+          },
+        )
+      ];
+
+  FloatingActionButton buildFloatingActionButton(BuildContext context) {
+    return FloatingActionButton(
+      backgroundColor: Theme.of(context).colorScheme.genelRenk,
+      onPressed: () {
+        Navigator.push(
+          context,
+          MaterialPageRoute(builder: (context) => AddingFolderPage()),
+        );
+      },
+      child: Icon(Icons.add),
     );
   }
 
   SliverGridDelegateWithFixedCrossAxisCount
       get buildSliverGridDelegateWithFixedCrossAxisCount =>
           SliverGridDelegateWithFixedCrossAxisCount(crossAxisCount: 3);
-
-  FloatingActionButton buildFloatingActionButton(BuildContext context) =>
-      FloatingActionButton(
-        child: Icon(Icons.add),
-        backgroundColor: Colors.deepOrange,
-        onPressed: floatingActionButtonOnTap(context),
-      );
-
-  List<Widget> appBarActions(BuildContext context) =>
-      [appBarSearchAction(context)];
-
-  IconButton appBarSearchAction(BuildContext context) => IconButton(
-        icon: Icon(Icons.search),
-        onPressed: appBarSearchActionOnTap(context),
-      );
-
-  appBarSearchActionOnTap(BuildContext context) => showSearch(
-        context: context,
-        delegate: PasswordSearch(
-          context,
-        ),
-      );
-
-  folderContainerOnTap(BuildContext context, int index) => Navigator.push(
-        context,
-        MaterialPageRoute(builder: (_) => DetailsPage(folderIndex: index)),
-      );
-
-  floatingActionButtonOnTap(BuildContext context) => Navigator.push(
-        context,
-        MaterialPageRoute(builder: (context) => AddFolderPage()),
-      );
-
-  drawerFavoriteItemOnTap(BuildContext context) {
-    Navigator.push(
-      context,
-      MaterialPageRoute(
-        builder: (context) => FavoriteAccountsPage(),
-      ),
-    );
-  }
-
-  sigonOutButtonOnTap(BuildContext context) {
-    print("sigonOutButtonOnTap");
-  }
 }

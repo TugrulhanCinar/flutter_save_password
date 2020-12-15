@@ -10,17 +10,12 @@ class UserViewModel with ChangeNotifier {
   UserModel _user;
   UserViewState _state = UserViewState.Idle;
 
-  set state(UserViewState state){
-
-    print("UserViewState set state çalıştı");
-    print("UserViewState eski state:" + _state.toString() );
-    print("UserViewState yeni state:" + state.toString() );
+  set state(UserViewState state) {
     _state = state;
     notifyListeners();
   }
 
-
-  UserViewModel(){
+  UserViewModel() {
     currentUser();
   }
 
@@ -28,16 +23,15 @@ class UserViewModel with ChangeNotifier {
 
   UserModel get user => _user;
 
-
   Future<UserModel> currentUser() async {
-
     try {
       state = UserViewState.Busy;
       _user = await _userRepository.getCurrentUser();
-      if (_user != null)
+      if (_user != null) {
         return _user;
-      else
+      } else {
         return null;
+      }
     } catch (e) {
       debugPrint("Viewmodeldeki current user hata:" + e.toString());
       return null;
@@ -47,32 +41,29 @@ class UserViewModel with ChangeNotifier {
   }
 
   Future<UserModel> signInWithEmailandPassword(String email, String password) async {
-    state = UserViewState.Busy;
-    _user = await _userRepository.signInWithEmailandPassword(email, password);
-    state = UserViewState.Idle;
-    print(_user.toString());
-    return _user;
+    try {
+      state = UserViewState.Busy;
+      _user = await _userRepository.signInWithEmailandPassword(email, password);
+      return _user;
+    }  finally {
+      state = UserViewState.Idle;
+    }
   }
 
-  Future<UserModel> createUserWithEmailandPassword(String email, String sifre) {
-    // TODO: implement createUserWithEmailandPassword
+  Future<UserModel> createUserWithEmailandPassword(UserModel user) async{
     state = UserViewState.Busy;
-
-
+    var result = await _userRepository.createUserWithEmailandPassword(user);
+    _user = result;
+    _user.userName = user.userName;
     state = UserViewState.Idle;
-    return null;
+    return result;
   }
 
-  Future<bool> signOut(){
-    // TODO: implement
+  Future<bool> signOut() async {
     state = UserViewState.Busy;
-
-
-
+    bool result = await _userRepository.signOut();
+    _user = null;
     state = UserViewState.Idle;
-    return null;
+    return result;
   }
-
-
-
 }

@@ -16,55 +16,60 @@ class UserRepository implements AuthBase {
 
   @override
   Future<UserModel> getCurrentUser() async {
-    print("getCurrentUser");
     if (appMode == AppMode.DEBUG) {
       return null;
     } else {
       currentUser = await _firebaseAuthService.getCurrentUser();
-      print(" getCurrentUser _firebaseAuthService.getCurrentUser() ");
-      return _firebaseAuthService.getCurrentUser();
+      if(currentUser != null){
+        var userData = await _firestoreDBService.readUserData(currentUser.userID);
+        currentUser.userName = userData.userName;
+      }
+      return currentUser;
     }
   }
 
   @override
   Future<UserModel> signInWithEmailandPassword(
       String email, String password) async {
-    // TODO: implement
     if (appMode == AppMode.DEBUG) {
       return null;
     } else {
-      var userModel = await _firebaseAuthService.signInWithEmailandPassword(
-          email, password);
+      var userModel = await _firebaseAuthService.signInWithEmailandPassword(email, password);
+      var userData = await _firestoreDBService.readUserData(userModel.userID);
+      userModel.userName = userData.userName;
       currentUser = userModel;
       return userModel;
     }
   }
 
   @override
-  Future<bool> signOut() {
-    // TODO: implement signOut
+  Future<bool> signOut() async {
     if (appMode == AppMode.DEBUG) {
       return null;
     } else {
-      return null;
+      var result = await _firebaseAuthService.signOut();
+      currentUser = null;
+      return result;
     }
   }
 
   @override
-  Future<UserModel> createUserWithEmailandPassword(
-      String email, String password) {
-    // TODO: implement createUserWithEmailandPassword
+  Future<UserModel> createUserWithEmailandPassword(UserModel userModel) async{
     if (appMode == AppMode.DEBUG) {
       return null;
     } else {
-      return null;
+       var newUser = await _firebaseAuthService.createUserWithEmailandPassword(userModel);
+       userModel.userID = newUser.userID;
+       userModel.userCreateTime = newUser.userCreateTime;
+      _firestoreDBService.writeUserData(userModel);
+      currentUser = userModel;
+      return currentUser;
     }
   }
 
   ///***********************
 
   Future<List<Folder>> fetchFolders() async {
-    // TODO: implement fetchFolders
     if (appMode == AppMode.DEBUG) {
       return null;
     } else {
@@ -74,7 +79,6 @@ class UserRepository implements AuthBase {
   }
 
   Future<bool> createFolder(Folder folder) async {
-    // TODO: implement saveFolder
     if (appMode == AppMode.DEBUG) {
       return null;
     } else {
@@ -82,17 +86,16 @@ class UserRepository implements AuthBase {
     }
   }
 
-  Future<bool> updateFolder(Folder folder, Folder newFolder) async{
-    // TODO: implement updateFolder
+  Future<bool> updateFolder(Folder folder, Folder newFolder) async {
     if (appMode == AppMode.DEBUG) {
       return null;
     } else {
-
-      return await _firestoreDBService.updateFolder(folder, newFolder,currentUser.userID);
+      return await _firestoreDBService.updateFolder(
+          folder, newFolder, currentUser.userID);
     }
   }
 
-  Future<bool> deleteFolder(Folder folder) async{
+  Future<bool> deleteFolder(Folder folder) async {
     if (appMode == AppMode.DEBUG) {
       return null;
     } else {
@@ -103,16 +106,15 @@ class UserRepository implements AuthBase {
   ///***********************
 
   Future<bool> updateAccount(Account account, Account newAccout) async {
-    // TODO: implement updateAccount
     if (appMode == AppMode.DEBUG) {
       return null;
     } else {
-       return await _firestoreDBService.updateAccount(account,newAccout,currentUser.userID);
+      return await _firestoreDBService.updateAccount(
+          account, newAccout, currentUser.userID);
     }
   }
 
   Future<bool> saveAccount(Account account) async {
-    // TODO: implement saveAccount
     if (appMode == AppMode.DEBUG) {
       return null;
     } else {
@@ -121,7 +123,7 @@ class UserRepository implements AuthBase {
   }
 
   Future<bool> deleteAccount(Account account) async {
-    // TODO: implement deleteAccount
+
     if (appMode == AppMode.DEBUG) {
       return null;
     } else {

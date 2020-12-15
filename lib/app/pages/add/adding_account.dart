@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_save_password/app/common__widget/custom_app_bar.dart';
+import 'package:flutter_save_password/app/common__widget/custom_button.dart';
+
 import 'package:flutter_save_password/extensions/context_extension.dart';
 import 'package:flutter_save_password/extensions/color_extension.dart';
 import 'package:flutter_save_password/models/account_model.dart';
@@ -6,17 +9,19 @@ import 'package:flutter_save_password/models/folder_model.dart';
 import 'package:flutter_save_password/view_model/save_password_view_model.dart';
 import 'package:provider/provider.dart';
 
-class AddAccountPage extends StatefulWidget {
+class AddingAccountPage extends StatefulWidget {
   final Folder folder;
 
-  const AddAccountPage({Key key, this.folder}) : super(key: key);
+  const AddingAccountPage({Key key, @required this.folder}) : super(key: key);
 
   @override
-  _AddAccountPageState createState() => _AddAccountPageState();
+  _AddingAccountPageState createState() => _AddingAccountPageState();
 }
 
-class _AddAccountPageState extends State<AddAccountPage> {
+class _AddingAccountPageState extends State<AddingAccountPage> {
   final String appBarTitle = "Hesap Ekle";
+  final String textTooLong = "Girilen metin fazla uzun";
+  final String textTooShort = "En az 1 karakter girmelisiniz";
   bool obscureTextPassword = true;
   final buttonText = "Oluştur";
   final mailLabelText = "Mail";
@@ -24,16 +29,20 @@ class _AddAccountPageState extends State<AddAccountPage> {
   final passwordLabelText = "Şifre";
   final _scafoldKey = GlobalKey<ScaffoldState>();
   final _formKey = GlobalKey<FormState>();
+  int textFormFieldMaxLength = 40;
+  int textFormFieldMinLength = 1;
   String accountName, accountMail, accountPass;
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       key: _scafoldKey,
-      appBar: context.appBar(appBarTitle),
+      appBar: appBar,
       body: _columnBody,
     );
   }
+
+  Widget get appBar => CustomAppBar(appBarTitle);
 
   Widget get _columnBody => Container(
         padding: context.paddingAllLowMedium,
@@ -54,55 +63,52 @@ class _AddAccountPageState extends State<AddAccountPage> {
         ),
       );
 
-  Widget get _createButton => RaisedButton(
-        color: Theme.of(context).colorScheme.genelRenk,
-        onPressed: _createButtonOnTap,
-        child: _createButtonContainer,
-      );
+  Widget get _createButton => MyCustomButton(
+    buttonColor: Theme.of(context).colorScheme.genelRenk,
+    textColor: Colors.white,
+    buttonText: buttonText,
+    onTap: _createButtonOnTap,
+  );
 
-  Widget get _createButtonContainer => Container(
-        width: context.width,
-        alignment: Alignment.center,
-        child: _createButtonContainerText,
-      );
-
-  Widget get _createButtonContainerText => Text(buttonText,
-      style: context.theme.textTheme.subtitle1.copyWith(color: Colors.white));
 
   Widget get _accountName => TextFormField(
-        maxLength: 10,
-        style: TextStyle(color: Colors.blueAccent),
+        maxLength: textFormFieldMaxLength,
+        style: textFormFieldTextStyle,
         decoration: _customInputDecorationTextField(accountNameText),
+        validator: textFormFieldValidator,
         onSaved: (text) {
           accountName = text;
         },
       );
 
   Widget get _emailTextField => TextFormField(
-        maxLength: 10,
-        style: TextStyle(color: Colors.blueAccent),
+        maxLength: textFormFieldMaxLength,
+        style: textFormFieldTextStyle,
         decoration: _customInputDecorationTextField(mailLabelText),
+        validator: textFormFieldValidator,
         onSaved: (text) {
           accountMail = text;
         },
       );
 
   Widget get _passwordTextField => TextFormField(
-        maxLength: 10,
+        maxLength: textFormFieldMaxLength,
         maxLengthEnforced: true,
         obscureText: obscureTextPassword,
-        style: TextStyle(color: Colors.blueAccent),
+        style: textFormFieldTextStyle,
         decoration: _customInputDecorationPasswordTextField,
+        validator: textFormFieldValidator,
         onSaved: (text) {
           accountPass = text;
         },
       );
 
+  TextStyle get textFormFieldTextStyle => Theme.of(context).textTheme.bodyText1;
+
   InputDecoration get _customInputDecorationPasswordTextField {
     return context.customInputDecoration(
       passwordLabelText,
       color: Theme.of(context).colorScheme.genelRenk,
-      errorMaxLines: 10,
       suffixIcon: textFieldIcon,
     );
   }
@@ -111,7 +117,6 @@ class _AddAccountPageState extends State<AddAccountPage> {
     return context.customInputDecoration(
       text,
       color: Theme.of(context).colorScheme.genelRenk,
-      errorMaxLines: 10,
     );
   }
 
@@ -130,22 +135,31 @@ class _AddAccountPageState extends State<AddAccountPage> {
     });
   }
 
-  void _createButtonOnTap() {
-
+  void _createButtonOnTap() async{
     final _passwordSave =
         Provider.of<PasswordSaveViewModel>(context, listen: false);
+    bool result = false;
     Account account;
     if (_formKey.currentState.validate()) {
       _formKey.currentState.save();
-      account = Account(
-        accountName,
-        accountMail,
-        accountPass,
-        DateTime.now(),
-        widget.folder.folderID,
-        widget.folder.folderName
-      );
-      _passwordSave.saveAccount(account);
+      account = Account(accountName, accountMail, accountPass,
+          widget.folder.folderID, widget.folder.folderName);
+      result = await _passwordSave.saveAccount(account);
+
+      if(result){
+        Navigator.pop(context);
+      }
+    }
+
+  }
+
+  String textFormFieldValidator(text) {
+    if (text.length < textFormFieldMinLength) {
+      return textTooShort;
+    } else if (text.length > textFormFieldMaxLength) {
+      return textTooLong;
+    } else {
+      return null;
     }
   }
 }

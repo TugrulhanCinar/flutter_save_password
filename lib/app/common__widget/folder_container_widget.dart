@@ -4,14 +4,15 @@ class FolderContainer extends StatelessWidget {
   final double margin;
   final Color color;
   final String containerName;
-  final GestureTapCallback onTap;
+  final VoidCallback  onTap;
+
 
   FolderContainer({
     Key key,
     this.margin: 15,
     this.color: Colors.deepOrange,
     this.containerName: "SosyalMedyaaaaaa",
-    @required this.onTap,
+     this.onTap,
   }) : super(key: key);
 
   @override
@@ -30,12 +31,12 @@ class FolderContainer extends StatelessWidget {
     return Column(
       children: [
         Expanded(
-          flex: 90,
+          flex: 85,
           child: buildFolderContainer,
         ),
         Expanded(
-          flex: 10,
-          child: folderTextButton(context),
+          flex: 15,
+          child: folderTextItem(context),
         ),
       ],
     );
@@ -49,10 +50,10 @@ class FolderContainer extends StatelessWidget {
     );
   }
 
-  Text folderTextButton(BuildContext context) {
+  Text folderTextItem(BuildContext context) {
     return Text(
       containerName,
-      style: Theme.of(context).textTheme.bodyText2,
+      style: Theme.of(context).textTheme.bodyText1,
     );
   }
 

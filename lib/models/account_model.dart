@@ -10,7 +10,10 @@ class Account {
   bool favorite = false;
 
   Account(this.accountName, this.accountEmail, this.accountPassword,
-      this.accountCreateTime, this.folderID,this.folderName);
+      this.folderID, this.folderName);
+
+  Account.withDate(this.accountName, this.accountEmail, this.accountPassword,
+      this.accountCreateTime, this.folderID, this.folderName);
 
   Map<String, dynamic> toMap() {
     var map = Map<String, dynamic>();
@@ -39,7 +42,8 @@ class Account {
         DateTime.parse(map['account_create_time'].toString());
     this.accountUpdateFavoriteTime = map['account_update_favorite_time'] == null
         ? this.accountUpdateFavoriteTime = null
-        : this.accountUpdateFavoriteTime = DateTime.parse(map['account_update_favorite_time'].toString());
+        : this.accountUpdateFavoriteTime =
+            DateTime.parse(map['account_update_favorite_time'].toString());
     this.favorite = map['favorite'];
   }
 

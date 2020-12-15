@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_save_password/app/helper/helper.dart';
 import 'package:flutter_save_password/models/account_model.dart';
@@ -5,12 +7,14 @@ import 'package:flutter_save_password/models/folder_model.dart';
 import '../locator.dart';
 import '../services/repository/user_repository.dart';
 
-enum PasswordState { Idle, Busy,Loaded}
+enum PasswordState { Idle, Busy }
 
 class PasswordSaveViewModel with ChangeNotifier {
   final UserRepository _userRepository = locator<UserRepository>();
   PasswordState _state = PasswordState.Idle;
-  List<Folder> folders = List();
+
+  //List<Folder> folders = List();
+  List<Folder> folders;
   final List<Account> allAccount = List();
   final List<Account> allFavoriteAccount = List();
 
@@ -43,7 +47,8 @@ class PasswordSaveViewModel with ChangeNotifier {
 
   Future<bool> saveAccount(Account account) async {
     state = PasswordState.Busy;
-    account.accountID = createAccountID(account);
+    account.accountID = createID(account.accountCreateTime);
+    account.accountCreateTime = Helper.getDateTimeNow;
     bool result = await _userRepository.saveAccount(account);
     folders[_findFolderIndex(account.folderID)].accounts.insert(0, account);
     allAccount.add(account);
@@ -72,33 +77,30 @@ class PasswordSaveViewModel with ChangeNotifier {
         _findAccountIndexInAllFolder(account.accountID);
     folders[folderIndex].accounts[accountIndexInFolder] = newAccount;
     allAccount[accountIndexInAllAccount] = newAccount;
-
     state = PasswordState.Idle;
     return result;
   }
+
   ///******************
   Future<bool> saveFolder(Folder folder) async {
     state = PasswordState.Busy;
-    folder.folderID = createFolderID(folder);
     folder.folderCreateDate = Helper.getDateTimeNow;
+    folder.folderID = createID(folder.folderCreateDate);
     _userRepository.createFolder(folder);
     folders.insert(0, folder);
     state = PasswordState.Idle;
     return true;
   }
+
   Future<List<Folder>> fetchFolders() async {
     _state = PasswordState.Busy;
-    var result = await _userRepository.fetchFolders();
-    folders = result;
+    folders = await _userRepository.fetchFolders();
     _addAllAccount();
-    state = PasswordState.Loaded;
-    return result;
-
+    state = PasswordState.Idle;
+    return folders;
   }
 
-
   Future<bool> updateFolder(Folder folder, Folder newFolder) async {
-    //todo
     state = PasswordState.Busy;
     int folderIndex = _findFolderIndex(folder.folderID);
     newFolder.folderUpdateDate = Helper.getDateTimeNow;
@@ -149,9 +151,9 @@ class PasswordSaveViewModel with ChangeNotifier {
     return -1;
   }
 
-  String createFolderID(Folder folder) {
-    String id = folder.folderName +
-        folder.folderCreateDate
+  String createID(DateTime createTime) {
+    String id = getRandomString(10) +
+        createTime
             .toString()
             .replaceAll(' ', '')
             .replaceAll('-', "")
@@ -161,16 +163,13 @@ class PasswordSaveViewModel with ChangeNotifier {
     return id;
   }
 
-  String createAccountID(Account account) {
-    String id = account.accountName +
-        account.accountCreateTime
-            .toString()
-            .replaceAll(' ', '')
-            .replaceAll('-', "")
-            .replaceAll(".", "")
-            .replaceAll(":", "");
 
-    return id;
+  String getRandomString(int length) {
+    const _chars =
+        'AaBbCcDdEeFfGgHhIiJjKkLlMmNnOoPpQqRrSsTtUuVvWwXxYyZz1234567890';
+    final Random _rnd = Random();
+    return String.fromCharCodes(Iterable.generate(
+        length, (_) => _chars.codeUnitAt(_rnd.nextInt(_chars.length))));
   }
 
   void _addAllAccount() {

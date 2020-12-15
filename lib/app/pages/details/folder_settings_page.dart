@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_save_password/app/common__widget/custom_alert_dialog.dart';
+import 'package:flutter_save_password/app/common__widget/custom_app_bar.dart';
+import 'package:flutter_save_password/app/pages/home_page.dart';
 import 'package:flutter_save_password/extensions/context_extension.dart';
 import 'package:flutter_save_password/extensions/color_extension.dart';
 import 'package:flutter_save_password/models/folder_model.dart';
@@ -23,6 +25,8 @@ class _FolderSetingsPageState extends State<FolderSetingsPage> {
   String newFolderName;
   List<Color> colorList = List();
   int selectedIndex;
+  int maxLenght = 10;
+  int minLenght = 1;
   bool chance = false;
 
   @override
@@ -37,14 +41,16 @@ class _FolderSetingsPageState extends State<FolderSetingsPage> {
 
     return Scaffold(
       key: _scaffoldKey,
-      appBar: context.appBar(
-        widget.folder.folderName,
-        leading: _appBarLeading,
-        actions: appbarActions,
-      ),
+      appBar: appBar,
       body: _columnBody,
     );
   }
+
+  Widget get appBar => CustomAppBar(
+        widget.folder.folderName,
+        leading: _appBarLeading,
+        actions: appbarActions,
+      );
 
   List<Widget> get appbarActions {
     return [
@@ -63,7 +69,7 @@ class _FolderSetingsPageState extends State<FolderSetingsPage> {
               context.emptylowMediumValueWidget,
               _selectColorsWidget,
               context.emptylowMediumValueWidget,
-              _createButton,
+              _saveButton,
             ],
           ),
         ),
@@ -74,9 +80,9 @@ class _FolderSetingsPageState extends State<FolderSetingsPage> {
         onPressed: onWillPop,
       );
 
-  Widget get _createButton => RaisedButton(
+  Widget get _saveButton => RaisedButton(
         color: Colors.deepOrange,
-        onPressed: _saveButtonOnTap,
+        onPressed: _saveButtonOnPress,
         child: _createButtonContainer,
       );
 
@@ -93,48 +99,18 @@ class _FolderSetingsPageState extends State<FolderSetingsPage> {
         ),
       );
 
-  Widget get _deleteIconButton => IconButton(
-        icon: _deleteIcon,
-        onPressed: () {
-          final String deleteButtonText = "Kaydet";
-          final String cancelButtonText = "Vazgeç";
-          MyCustomDialog(
-            title: Text("Silmek İstediğinize Emin misiniz ?"),
-            content: Text(
-                "Dosyayı silerseniz tüm hesaplarlar ile beraber silinecektir emin misiniz? "),
-            actions: dialogChilderen(
-              button1Txt: deleteButtonText,
-              button2Txt: cancelButtonText,
-              button1OnTap: deleteButtonOnTap,
-              button2OnTap: cancelButtonOnTap,
-            ),
-          ).goster(context);
-        },
-      );
+  Widget get _deleteIconButton =>
+      IconButton(icon: _deleteIcon, onPressed: deleteIconButtonOnPressed);
 
   Widget get _deleteIcon => Icon(Icons.delete, color: Colors.red[800]);
 
-  void deleteButtonOnTap() async {
-    bool result =
-        await Provider.of<PasswordSaveViewModel>(context, listen: false)
-            .deleteFolder(widget.folder);
-    if (result) {
-      Navigator.pop(context);
-      Scaffold.of(context).showSnackBar(snackBar("Dosya silindi"));
-    } else {
-      Scaffold.of(context).showSnackBar(snackBar("Bir Hata oluştu"));
-    }
-  }
-
   Widget get _textField => TextFormField(
-        maxLength: 10,
+        maxLength: maxLenght,
         initialValue: widget.folder.folderName,
         maxLengthEnforced: true,
         onChanged: (String txt) => chance = true,
         onSaved: (String txt) => newFolderName = txt,
         style: TextStyle(color: Colors.red),
-        maxLines: 15,
-        minLines: 1,
         decoration: context.customInputDecoration(
           labelText,
           color: context.theme.colorScheme.genelRenk,
@@ -168,38 +144,23 @@ class _FolderSetingsPageState extends State<FolderSetingsPage> {
           .values
           .toList());
 
-  void _saveButtonOnTap() {
+  void _saveButtonOnPress() {
     final String saveButtonText = "Kaydet";
     final String cancelButtonText = "Vazgeç";
     if (chance) {
       MyCustomDialog(
         content: Text("Değişikliği kaydetmek istediğinize emin misiniz"),
         actions: dialogChilderen(
-          button1Txt: saveButtonText,
-          button2Txt: cancelButtonText,
-          button1OnTap: saveButtonOnTap,
-          button2OnTap: cancelButtonOnTap,
+          button1Txt: cancelButtonText,
+          button2Txt: saveButtonText,
+          button1OnTap: cancelButtonOnTap,
+          button2OnTap: saveButtonOnTap,
         ),
       ).goster(context);
     }
   }
 
-  saveButtonOnTap() {
-    var newFolder = widget.folder;
-    _formKey.currentState.save();
-    if (newFolderName.length > 1 && newFolderName.length < 15) {
-      newFolder.folderName = newFolderName;
-      newFolder.folderColor = colorList[selectedIndex];
-      Provider.of<PasswordSaveViewModel>(context, listen: false)
-          .updateFolder(widget.folder, newFolder);
-    }
-  }
-
-  cancelButtonOnTap() {
-    Navigator.pop(context);
-  }
-
-  onWillPop(){
+  onWillPop() {
     if (chance) {
       MyCustomDialog(
         content: Text(
@@ -213,24 +174,26 @@ class _FolderSetingsPageState extends State<FolderSetingsPage> {
     return Future.value(false);
   }
 
-  List<Widget> dialogChilderen(
-          {String button1Txt,
-          String button2Txt,
-          VoidCallback button1OnTap,
-          VoidCallback button2OnTap}) =>
+  List<Widget> dialogChilderen({
+    String button1Txt,
+    String button2Txt,
+    VoidCallback button1OnTap,
+    VoidCallback button2OnTap,
+  }) =>
       [
         ButtonBar(
           children: [
-            RaisedButton(
-              child: Text(button1Txt),
-              color: Theme.of(context).colorScheme.genelRenk,
-              onPressed: button1OnTap,
-            ),
             RaisedButton(
               child: Text(button2Txt),
               color: Theme.of(context).colorScheme.genelRenk,
               onPressed: button2OnTap,
             ),
+            RaisedButton(
+              child: Text(button1Txt),
+              color: Theme.of(context).colorScheme.genelRenk,
+              onPressed: button1OnTap,
+            ),
+
           ],
         )
       ];
@@ -266,6 +229,60 @@ class _FolderSetingsPageState extends State<FolderSetingsPage> {
       ),
     ];
   }
+
+  deleteIconButtonOnPressed() {
+    final String deleteButtonText = "Sil";
+    final String cancelButtonText = "Vazgeç";
+    MyCustomDialog(
+      title: Text("Silmek İstediğinize Emin misiniz ?"),
+      content: Text(
+          "Dosyayı silerseniz tüm hesaplarlar ile beraber silinecektir emin misiniz? "),
+      actions: dialogChilderen(
+        button2Txt: deleteButtonText,
+        button1Txt: cancelButtonText,
+        button2OnTap: deleteButtonOnTap,
+        button1OnTap: cancelButtonOnTap,
+      ),
+    ).goster(context);
+  }
+
+  void deleteButtonOnTap() async {
+    bool result =
+        await Provider.of<PasswordSaveViewModel>(context, listen: false)
+            .deleteFolder(widget.folder);
+    if (result) {
+      Navigator.pushAndRemoveUntil(
+          context,
+          MaterialPageRoute(builder: (context) => HomePage()),
+          (Route<dynamic> route) => false);
+    } else {
+      _scaffoldKey.currentState.showSnackBar(snackBar("Bir hata oluştu"));
+      print("bir hata oluştu deleteButtonOnTap");
+    }
+  }
+
+
+  saveButtonOnTap() async{
+    var newFolder = widget.folder;
+    _formKey.currentState.save();
+    bool result = false;
+    if (newFolderName.length > minLenght && newFolderName.length < maxLenght) {
+      newFolder.folderName = newFolderName;
+      newFolder.folderColor = colorList[selectedIndex];
+      result =  await Provider.of<PasswordSaveViewModel>(context, listen: false)
+          .updateFolder(widget.folder, newFolder);
+
+    }
+    if(result){
+      Navigator.pop(context);
+      Navigator.pop(context);
+    }
+  }
+
+  cancelButtonOnTap() {
+    Navigator.pop(context);
+  }
+
 
   findIndexFolderColor() {
     if (!chance) {
