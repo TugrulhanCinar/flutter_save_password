@@ -32,6 +32,7 @@ class PasswordSaveViewModel with ChangeNotifier {
     folders[folderIndex].accounts.remove(account);
     if (account.favorite) {
       folders[folderIndex].accounts.insert(0, newAccount);
+      allFavoriteAccount.add(account);
     } else {
       folders[folderIndex].accounts.add(newAccount);
       folders[folderIndex].favoriteAccounts.remove(account);

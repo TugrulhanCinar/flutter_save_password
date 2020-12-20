@@ -25,11 +25,10 @@ class _FavoritePageState extends State<FavoritePage> {
   Consumer<PasswordSaveViewModel> get buildBody {
     return Consumer<PasswordSaveViewModel>(
       builder: (context, cart, child) {
-        favoriteAccount = cart.allFavoriteAccount;
-
         if (cart.state == PasswordState.Busy) {
           return circularProgressIndicator;
         } else {
+          favoriteAccount = cart.allFavoriteAccount;
           return ListView.builder(
             itemCount: cart.allFavoriteAccount.length,
             itemBuilder: (BuildContext context, int index) {

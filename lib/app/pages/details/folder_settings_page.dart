@@ -145,18 +145,8 @@ class _FolderSetingsPageState extends State<FolderSetingsPage> {
           .toList());
 
   void _saveButtonOnPress() {
-    final String saveButtonText = "Kaydet";
-    final String cancelButtonText = "Vazgeç";
     if (chance) {
-      MyCustomDialog(
-        content: Text("Değişikliği kaydetmek istediğinize emin misiniz"),
-        actions: dialogChilderen(
-          button1Txt: cancelButtonText,
-          button2Txt: saveButtonText,
-          button1OnTap: cancelButtonOnTap,
-          button2OnTap: saveButtonOnTap,
-        ),
-      ).goster(context);
+      saveButtonOnTap();
     }
   }
 
@@ -170,8 +160,6 @@ class _FolderSetingsPageState extends State<FolderSetingsPage> {
     } else {
       Navigator.pop(context);
     }
-
-    return Future.value(false);
   }
 
   List<Widget> dialogChilderen({
@@ -282,7 +270,6 @@ class _FolderSetingsPageState extends State<FolderSetingsPage> {
   cancelButtonOnTap() {
     Navigator.pop(context);
   }
-
 
   findIndexFolderColor() {
     if (!chance) {

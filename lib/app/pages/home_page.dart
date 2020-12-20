@@ -20,13 +20,13 @@ import 'search.dart';
 class HomePage extends StatelessWidget {
   final String appBarTitle = "App bar Title";
   final String drawerFavoriteTitle = "Favoriler";
+  final String createRandomPasswordTitle = "Şifre Oluştur";
   final String profileFavoriteTitle = "Profile";
   final String signOutFavoriteTitle = "Çıkış yap";
   List<Folder> folderList;
 
   @override
   Widget build(BuildContext context) {
-
     return Scaffold(
       drawer: buildDrawer(context),
       floatingActionButton: buildFloatingActionButton(context),
@@ -53,18 +53,51 @@ class HomePage extends StatelessWidget {
       child: Column(
         mainAxisAlignment: MainAxisAlignment.spaceAround,
         children: [
-          Expanded(
-            child: ListView(
-              children: [
-                buildDrawerHeader(context),
-                favoritePageIconButton(context),
-                profilePageIconButton(context),
-              ],
-            ),
-          ),
+          Expanded(child: buildDrawerBody(context)),
           signOutPageIconButton(context),
         ],
       ),
+    );
+  }
+
+  ListView buildDrawerBody(BuildContext context) {
+    return ListView(
+      children: [
+        buildContainerDrawerHeader(context),
+        favoritePageIconButton(context),
+        profilePageIconButton(context),
+      ],
+    );
+  }
+
+  Container buildContainerDrawerHeader(BuildContext context) {
+    return Container(
+      child: buildDrawerHeader(context),
+      color: Colors.red,
+    );
+  }
+
+  ListTile profilePageIconButton(BuildContext context) {
+    return ListTile(
+      title: Text(profileFavoriteTitle),
+      leading: Icon(Icons.person),
+      onTap: () {
+        Navigator.pop(context);
+        Navigator.push(
+            context, MaterialPageRoute(builder: (context) => ProfilePage()));
+      },
+    );
+  }
+
+  ListTile favoritePageIconButton(BuildContext context) {
+    return ListTile(
+      title: Text(drawerFavoriteTitle),
+      leading: Icon(Icons.favorite),
+      onTap: () {
+        Navigator.pop(context);
+        Navigator.push(
+            context, MaterialPageRoute(builder: (context) => FavoritePage()));
+      },
     );
   }
 
@@ -103,64 +136,42 @@ class HomePage extends StatelessWidget {
     );
   }
 
-  RoundedRectangleBorder roundedRectangleBorder(BuildContext context) =>
-      RoundedRectangleBorder(borderRadius: context.borderHighRadiusHCircular);
+  DrawerHeader buildDrawerHeader(BuildContext context) => DrawerHeader(
+        child: Container(),
+        duration: Duration(seconds: 1),
+        decoration: buildDrawerHeaderBoxDecoration(context),
+      );
 
-  ListTile profilePageIconButton(BuildContext context) {
-    return ListTile(
-      title: Text(profileFavoriteTitle),
-      leading: Icon(Icons.person),
-      onTap: () {
-        Navigator.pop(context);
-        Navigator.push(
-            context, MaterialPageRoute(builder: (context) => ProfilePage()));
-      },
-    );
-  }
+  BoxDecoration buildDrawerHeaderBoxDecoration(BuildContext context) =>
+      BoxDecoration(
+        color: Theme.of(context).colorScheme.genelRenk,
+        //borderRadius: BorderRadius.only(bottomRight: Radius.circular(30.0)),
+        image: drawerImage(context),
+        shape: BoxShape.circle,
+      );
 
-  ListTile favoritePageIconButton(BuildContext context) {
-    return ListTile(
-      title: Text(drawerFavoriteTitle),
-      leading: Icon(Icons.favorite),
-      onTap: () {
-        Navigator.pop(context);
-        Navigator.push(
-            context, MaterialPageRoute(builder: (context) => FavoritePage()));
-      },
-    );
-  }
-
-  DrawerHeader buildDrawerHeader(BuildContext context) {
-    return DrawerHeader(
-      child: buildDrawerHeaderItem(context),
-      decoration: buildDrawerHeaderBoxDecoration(context),
-    );
-  }
-
-  BoxDecoration buildDrawerHeaderBoxDecoration(BuildContext context) {
-    return BoxDecoration(
-      color: Theme.of(context).colorScheme.genelRenk,
-      borderRadius: BorderRadius.only(bottomRight: Radius.circular(30.0)),
-    );
-  }
+  DecorationImage drawerImage(BuildContext context) => DecorationImage(
+        image: NetworkImage(Provider.of<UserViewModel>(context).user.userPhoto),
+        fit: BoxFit.fill,
+      );
 
   Column buildDrawerHeaderItem(BuildContext context) => Column(
         mainAxisAlignment: MainAxisAlignment.end,
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          ListTile(
-            title: buildDrawerHeaderItemTitle(context),
-            subtitle: buildDrawerHeaderItemSubtitle(context),
-          ),
+          buildNameAndMail(context),
         ],
       );
 
-  Text buildDrawerHeaderItemSubtitle(BuildContext context) {
-    return Text(
-      Provider.of<UserViewModel>(context).user.userEmail,
-      style: Theme.of(context).textTheme.caption.copyWith(color: Colors.white),
-    );
-  }
+  ListTile buildNameAndMail(BuildContext context) => ListTile(
+        title: buildDrawerHeaderItemTitle(context),
+        subtitle: buildDrawerHeaderItemSubtitle(context),
+      );
+
+  Text buildDrawerHeaderItemSubtitle(BuildContext context) => Text(
+        Provider.of<UserViewModel>(context).user.userEmail,
+        style: Theme.of(context).textTheme.caption.copyWith(),
+      );
 
   Text buildDrawerHeaderItemTitle(BuildContext context) {
     return Text(
@@ -185,7 +196,6 @@ class HomePage extends StatelessWidget {
             context,
             MaterialPageRoute(
                 builder: (context) => FolderDetailPage(
-                      folder: folderList[index],
                       folderIndex: index,
                     )),
           );
@@ -229,4 +239,7 @@ class HomePage extends StatelessWidget {
   SliverGridDelegateWithFixedCrossAxisCount
       get buildSliverGridDelegateWithFixedCrossAxisCount =>
           SliverGridDelegateWithFixedCrossAxisCount(crossAxisCount: 3);
+
+  RoundedRectangleBorder roundedRectangleBorder(BuildContext context) =>
+      RoundedRectangleBorder(borderRadius: context.borderHighRadiusHCircular);
 }

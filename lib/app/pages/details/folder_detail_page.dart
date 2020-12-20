@@ -10,10 +10,10 @@ import 'package:flutter_save_password/view_model/save_password_view_model.dart';
 import 'package:provider/provider.dart';
 
 class FolderDetailPage extends StatefulWidget {
-  final Folder folder;
+
   final int folderIndex;
 
-  const FolderDetailPage({Key key, @required this.folder, this.folderIndex})
+  const FolderDetailPage({Key key, @required this.folderIndex})
       : super(key: key);
 
   @override
@@ -22,9 +22,12 @@ class FolderDetailPage extends StatefulWidget {
 
 class _FolderDetailPageState extends State<FolderDetailPage> {
   Folder folder;
-//todo genel datadan haberi olmuyor bunu düzelt eklendiğinde falan
+
   @override
   Widget build(BuildContext context) {
+    folder = folder ??
+        Provider.of<PasswordSaveViewModel>(context).folders[widget.folderIndex];
+
     return Scaffold(
       appBar: buildCustomAppBar(context),
       body: buildListView,
@@ -34,7 +37,7 @@ class _FolderDetailPageState extends State<FolderDetailPage> {
   @override
   void initState() {
     super.initState();
-    folder = widget.folder;
+    //folder = widget.folder;
   }
 
   CustomAppBar buildCustomAppBar(BuildContext context) {

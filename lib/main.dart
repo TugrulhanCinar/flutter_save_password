@@ -8,10 +8,6 @@ import 'package:provider/provider.dart';
 import 'app/pages/landing_page.dart';
 import 'view_model/user_view_model.dart';
 
-//todo favoriye eklendiğinde baze en yukarıya çıkmıyor onu düzelt
-//todo otomatik şifre oluşturucu ekle
-
-
 void main() async {
   setup();
   WidgetsFlutterBinding.ensureInitialized();
@@ -67,5 +63,5 @@ class MyApp extends StatelessWidget {
 
   TextStyle get bodyText1 => TextStyle(color: Colors.red);
 
-  TextStyle get bodyText2 => TextStyle(color: Colors.white);
+  TextStyle get bodyText2 => TextStyle(color: Colors.green);
 }

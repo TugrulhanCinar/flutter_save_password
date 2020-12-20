@@ -1,3 +1,4 @@
+import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_save_password/models/user_model.dart';
 import 'package:flutter_save_password/services/repository/user_repository.dart';
@@ -27,6 +28,7 @@ class UserViewModel with ChangeNotifier {
     try {
       state = UserViewState.Busy;
       _user = await _userRepository.getCurrentUser();
+
       if (_user != null) {
         return _user;
       } else {
@@ -48,6 +50,34 @@ class UserViewModel with ChangeNotifier {
     }  finally {
       state = UserViewState.Idle;
     }
+  }
+
+  Future<bool> updateUserData(UserModel user) async{
+    state = UserViewState.Busy;
+    var result = await _userRepository.updateUserData(user);
+    _user.userName = user.userName;
+    state = UserViewState.Idle;
+    return result;
+  }
+
+  /*
+
+  Future<bool> updateUserName(String userName) async{
+    state = UserViewState.Busy;
+    var result = await _userRepository.updateUserData(userName);
+
+    _user.userName = userName;
+    state = UserViewState.Idle;
+    return result;
+  }
+   */
+
+  Future<String> updateUserImage(File _image) async{
+    state = UserViewState.Busy;
+    var result = await _userRepository.updateUserImage(_image);
+    _user.userPhoto = result;
+    state = UserViewState.Idle;
+    return result;
   }
 
   Future<UserModel> createUserWithEmailandPassword(UserModel user) async{

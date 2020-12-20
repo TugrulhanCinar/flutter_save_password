@@ -1,3 +1,4 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter_save_password/models/account_model.dart';
 import 'package:flutter_save_password/models/folder_model.dart';
@@ -6,6 +7,41 @@ import 'db_base.dart';
 
 class FirestoreDBService implements DBBase {
   final databaseReference = FirebaseDatabase.instance.reference();
+
+
+  Future<bool> updateUserName(UserModel user,String userID) async{
+    try{
+     /* Map<dynamic,dynamic> map = Map();
+      map["user_name"] = userName;*/
+      await databaseReference
+          .child('users')
+          .child(userID)
+          .child("user_data")
+          .update(user.toMap());
+      return true;
+    }catch(e){
+      print("updateUserName hata: " + e.toString());
+      return false;
+    }
+  }
+  /*
+
+  Future<bool> updateUserName(String userName,String userID) async{
+    try{
+      Map<dynamic,dynamic> map = Map();
+      map["user_name"] = userName;
+      await databaseReference
+          .child('users')
+          .child(userID)
+          .child("user_data")
+          .update(map);
+      return true;
+    }catch(e){
+      print("updateUserName hata: " + e.toString());
+      return false;
+    }
+  }
+   */
 
   Future<bool> writeUserData(UserModel userModel) async {
     try {

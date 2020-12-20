@@ -1,16 +1,19 @@
+import 'dart:io';
 import 'package:flutter_save_password/models/account_model.dart';
 import 'package:flutter_save_password/models/folder_model.dart';
 import 'package:flutter_save_password/models/user_model.dart';
 import 'package:flutter_save_password/services/auth/auth_base.dart';
 import 'package:flutter_save_password/services/auth/firebase_auth.dart';
-import 'package:flutter_save_password/services/storage/firebase_db_services.dart';
 import 'package:flutter_save_password/locator.dart';
+import 'package:flutter_save_password/services/database/firebase_db_services.dart';
+import 'package:flutter_save_password/services/storeage/firebase_storage_service.dart';
 
 enum AppMode { DEBUG, RELEASE }
 
 class UserRepository implements AuthBase {
   FirestoreDBService _firestoreDBService = locator<FirestoreDBService>();
   FirebaseAuthServices _firebaseAuthService = locator<FirebaseAuthServices>();
+  FirebaseStorageService _service = locator<FirebaseStorageService>();
   AppMode appMode = AppMode.RELEASE;
   UserModel currentUser;
 
@@ -20,9 +23,10 @@ class UserRepository implements AuthBase {
       return null;
     } else {
       currentUser = await _firebaseAuthService.getCurrentUser();
-      if(currentUser != null){
-        var userData = await _firestoreDBService.readUserData(currentUser.userID);
-        currentUser.userName = userData.userName;
+      if (currentUser != null) {
+        var userData =
+            await _firestoreDBService.readUserData(currentUser.userID);
+        currentUser = userData;
       }
       return currentUser;
     }
@@ -34,7 +38,8 @@ class UserRepository implements AuthBase {
     if (appMode == AppMode.DEBUG) {
       return null;
     } else {
-      var userModel = await _firebaseAuthService.signInWithEmailandPassword(email, password);
+      var userModel = await _firebaseAuthService.signInWithEmailandPassword(
+          email, password);
       var userData = await _firestoreDBService.readUserData(userModel.userID);
       userModel.userName = userData.userName;
       currentUser = userModel;
@@ -53,14 +58,31 @@ class UserRepository implements AuthBase {
     }
   }
 
-  @override
-  Future<UserModel> createUserWithEmailandPassword(UserModel userModel) async{
+  Future<bool> updateUserData(UserModel user) async {
+    return await _firestoreDBService.updateUserName(user, currentUser.userID);
+  }
+
+  Future<String> updateUserImage(File _image) async {
     if (appMode == AppMode.DEBUG) {
       return null;
     } else {
-       var newUser = await _firebaseAuthService.createUserWithEmailandPassword(userModel);
-       userModel.userID = newUser.userID;
-       userModel.userCreateTime = newUser.userCreateTime;
+      var result =
+          await _service.uploadFile(currentUser.userID, "images", _image);
+      currentUser.userPhoto = result;
+      updateUserData(currentUser);
+      return result;
+    }
+  }
+
+  @override
+  Future<UserModel> createUserWithEmailandPassword(UserModel userModel) async {
+    if (appMode == AppMode.DEBUG) {
+      return null;
+    } else {
+      var newUser =
+          await _firebaseAuthService.createUserWithEmailandPassword(userModel);
+      userModel.userID = newUser.userID;
+      userModel.userCreateTime = newUser.userCreateTime;
       _firestoreDBService.writeUserData(userModel);
       currentUser = userModel;
       return currentUser;
@@ -123,7 +145,6 @@ class UserRepository implements AuthBase {
   }
 
   Future<bool> deleteAccount(Account account) async {
-
     if (appMode == AppMode.DEBUG) {
       return null;
     } else {
