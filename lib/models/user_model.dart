@@ -4,8 +4,10 @@ class UserModel {
   String userEmail;
   DateTime userCreateTime;
   String userPassword;
-  String userPhoto;
-  final String _firstProfileFotoUrl = "https://firebasestorage.googleapis.com/v0/b/savepasswords-6c7f3.appspot.com/o/photo.jpg?alt=media&token=f2ae2177-6e31-477b-a38c-2565427b6e12";
+  String userPhotoNetwork;
+  String userPhotoLocal;
+  final String _firstProfileFotoUrl =
+      "https://firebasestorage.googleapis.com/v0/b/savepasswords-6c7f3.appspot.com/o/photo.jpg?alt=media&token=f2ae2177-6e31-477b-a38c-2565427b6e12";
 
 
   UserModel(this.userName, this.userID, this.userEmail, this.userCreateTime);
@@ -22,7 +24,7 @@ class UserModel {
     map['user_id'] = userID;
     map['user_name'] = userName;
     map['user_mail'] = userEmail;
-    map['user_photo'] = userPhoto == null ? _firstProfileFotoUrl : userPhoto;
+    map['user_photo'] = userPhotoNetwork == null ? _firstProfileFotoUrl : userPhotoNetwork;
     map['user_create_date'] = userCreateTime.toString();
 
     return map;
@@ -32,7 +34,7 @@ class UserModel {
     this.userID = map['user_id'];
     this.userName = map['user_name'];
     this.userEmail = map['user_mail'];
-    this.userPhoto = map['user_photo'] == null ? _firstProfileFotoUrl : map['user_photo'];
+    this.userPhotoNetwork = map['user_photo'] == null ? _firstProfileFotoUrl : map['user_photo'];
     this.userCreateTime =   DateTime.parse(map['user_create_date'].toString());
   }
 

@@ -1,9 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_save_password/app/common__widget/custom_alert_dialog.dart';
 import 'package:flutter_save_password/app/common__widget/custom_app_bar.dart';
+import 'package:flutter_save_password/app/helper/helper.dart';
 import 'package:flutter_save_password/app/pages/home_page.dart';
 import 'package:flutter_save_password/extensions/context_extension.dart';
 import 'package:flutter_save_password/extensions/color_extension.dart';
+import 'package:flutter_save_password/init/navigation/navigation_constants.dart';
+import 'package:flutter_save_password/init/navigation/navigation_services.dart';
 import 'package:flutter_save_password/models/folder_model.dart';
 import 'package:flutter_save_password/view_model/save_password_view_model.dart';
 import 'package:provider/provider.dart';
@@ -23,7 +26,7 @@ class _FolderSetingsPageState extends State<FolderSetingsPage> {
   final buttonText = "Değişikliği kaydet";
   final labelText = "Dosya ismi";
   String newFolderName;
-  List<Color> colorList = List();
+  List<Color> colorList = [];
   int selectedIndex;
   int maxLenght = 10;
   int minLenght = 1;
@@ -107,7 +110,6 @@ class _FolderSetingsPageState extends State<FolderSetingsPage> {
   Widget get _textField => TextFormField(
         maxLength: maxLenght,
         initialValue: widget.folder.folderName,
-        maxLengthEnforced: true,
         onChanged: (String txt) => chance = true,
         onSaved: (String txt) => newFolderName = txt,
         style: TextStyle(color: Colors.red),
@@ -181,25 +183,9 @@ class _FolderSetingsPageState extends State<FolderSetingsPage> {
               color: Theme.of(context).colorScheme.genelRenk,
               onPressed: button1OnTap,
             ),
-
           ],
         )
       ];
-
-  Widget snackBar(txt) => SnackBar(
-        backgroundColor: Theme.of(context).primaryColor,
-        content: Row(
-          children: <Widget>[
-            Icon(Icons.thumb_up),
-            SizedBox(
-              width: 20,
-            ),
-            Expanded(
-              child: Text(txt),
-            ),
-          ],
-        ),
-      );
 
   List<Widget> get onWillPopButtonBar {
     final String comeBackButtonText = "Çık";
@@ -238,30 +224,23 @@ class _FolderSetingsPageState extends State<FolderSetingsPage> {
     bool result =
         await Provider.of<PasswordSaveViewModel>(context, listen: false)
             .deleteFolder(widget.folder);
-    if (result) {
-      Navigator.pushAndRemoveUntil(
-          context,
-          MaterialPageRoute(builder: (context) => HomePage()),
-          (Route<dynamic> route) => false);
-    } else {
-      _scaffoldKey.currentState.showSnackBar(snackBar("Bir hata oluştu"));
-      print("bir hata oluştu deleteButtonOnTap");
-    }
+    result
+        ? NavigationServices.instance
+            .navigateToPageClear(path: NavigationConstans.HOME_PAGE)
+        : Helper.showDefaultSnackBar(context, "Bir hata oluştu");
   }
 
-
-  saveButtonOnTap() async{
+  saveButtonOnTap() async {
     var newFolder = widget.folder;
     _formKey.currentState.save();
     bool result = false;
     if (newFolderName.length > minLenght && newFolderName.length < maxLenght) {
       newFolder.folderName = newFolderName;
       newFolder.folderColor = colorList[selectedIndex];
-      result =  await Provider.of<PasswordSaveViewModel>(context, listen: false)
+      result = await Provider.of<PasswordSaveViewModel>(context, listen: false)
           .updateFolder(widget.folder, newFolder);
-
     }
-    if(result){
+    if (result) {
       Navigator.pop(context);
       Navigator.pop(context);
     }

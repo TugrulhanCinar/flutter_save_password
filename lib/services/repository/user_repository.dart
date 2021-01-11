@@ -42,7 +42,6 @@ class UserRepository implements AuthBase {
           email, password);
       var userData = await _firestoreDBService.readUserData(userModel.userID);
       userModel.userName = userData.userName;
-      currentUser = userModel;
       return userModel;
     }
   }
@@ -67,8 +66,8 @@ class UserRepository implements AuthBase {
       return null;
     } else {
       var result =
-          await _service.uploadFile(currentUser.userID, "images", _image);
-      currentUser.userPhoto = result;
+          await _service.saveUserPhoto(currentUser.userID, "images", _image);
+      currentUser.userPhotoNetwork = result;
       updateUserData(currentUser);
       return result;
     }

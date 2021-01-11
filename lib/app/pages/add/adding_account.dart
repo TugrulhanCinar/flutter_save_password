@@ -93,7 +93,6 @@ class _AddingAccountPageState extends State<AddingAccountPage> {
 
   Widget get _passwordTextField => TextFormField(
         maxLength: textFormFieldMaxLength,
-        maxLengthEnforced: true,
         obscureText: obscureTextPassword,
         style: textFormFieldTextStyle,
         decoration: _customInputDecorationPasswordTextField,

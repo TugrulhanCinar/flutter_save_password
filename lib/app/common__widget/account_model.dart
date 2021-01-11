@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_save_password/init/navigation/navigation_constants.dart';
+import 'package:flutter_save_password/init/navigation/navigation_services.dart';
 import 'file:///E:/flutterProject/flutter_save_password/lib/app/pages/details/account_details_page.dart';
 import 'package:flutter_save_password/models/account_model.dart';
 import 'package:flutter_save_password/view_model/save_password_view_model.dart';
@@ -50,14 +52,7 @@ class AccountModelWidget extends StatelessWidget {
       );
 
   listTileOnTap(BuildContext context) async {
-    Navigator.push(
-      context,
-      MaterialPageRoute(
-        builder: (context) => AccountDetailPage(
-          account: _account,
-        ),
-      ),
-    );
+    NavigationServices.instance.navigateToPage(path: NavigationConstans.ACCOUNT_DETAIL_PAGE,data: _account);
   }
 
   Widget favoriteIconButton(BuildContext context) {

@@ -6,14 +6,16 @@ class FirebaseStorageService implements StorageBase {
   final FirebaseStorage _firebaseStorage = FirebaseStorage.instance;
 
   @override
-  Future<String> uploadFile(
+  Future<String> saveUserPhoto(
       String userID, String fileType, File yuklenecekDosya) async {
     var uploadTask =await _firebaseStorage
         .ref()
+        .child("users")
         .child(userID)
         .child(fileType)
         .child("profile_photo")
         .putFile(yuklenecekDosya);
+
     return uploadTask.ref.getDownloadURL();
   }
 }

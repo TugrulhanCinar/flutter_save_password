@@ -15,8 +15,11 @@ class PasswordSaveViewModel with ChangeNotifier {
 
   //List<Folder> folders = List();
   List<Folder> folders;
-  final List<Account> allAccount = List();
-  final List<Account> allFavoriteAccount = List();
+  final List<Account> allAccount = [];
+  final List<Account> allFavoriteAccount =  [];
+  //final List<Account> allAccount = List();
+  //final List<Account> allFavoriteAccount = List();
+
 
   set state(PasswordState state) {
     _state = state;
@@ -48,8 +51,8 @@ class PasswordSaveViewModel with ChangeNotifier {
 
   Future<bool> saveAccount(Account account) async {
     state = PasswordState.Busy;
-    account.accountID = createID(account.accountCreateTime);
     account.accountCreateTime = Helper.getDateTimeNow;
+    account.accountID = createID(account.accountCreateTime);
     bool result = await _userRepository.saveAccount(account);
     folders[_findFolderIndex(account.folderID)].accounts.insert(0, account);
     allAccount.add(account);

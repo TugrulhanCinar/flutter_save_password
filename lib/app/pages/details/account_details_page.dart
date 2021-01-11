@@ -91,7 +91,6 @@ class _AccountDetailPageState extends State<AccountDetailPage> {
 
   Widget get _passwordTextField => TextFormField(
         maxLength: textFormFieldMaxLength,
-        maxLengthEnforced: true,
         initialValue: accountPass,
         obscureText: obscureTextPassword,
         validator: textFormFieldValidator,

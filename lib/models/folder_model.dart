@@ -8,8 +8,8 @@ class Folder {
   Color folderColor;
   DateTime folderCreateDate;
   DateTime folderUpdateDate;
-  List<Account> accounts = List();
-  List<Account> favoriteAccounts = List();
+  List<Account> accounts  = [];
+  List<Account> favoriteAccounts  = [];
 
 
   Folder(this.folderName, this.folderColor);
@@ -49,7 +49,7 @@ class Folder {
   }
 
   sortByFavorite() {
-    List<Account> unFavoriteAccounts = List();
+    List<Account> unFavoriteAccounts  = [];
     favoriteAccounts.clear();
     for (var currentAccount in accounts) {
       if (currentAccount.favorite) {

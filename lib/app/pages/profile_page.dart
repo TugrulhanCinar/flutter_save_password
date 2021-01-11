@@ -3,7 +3,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_save_password/app/common__widget/custom_alert_dialog.dart';
 import 'package:flutter_save_password/app/common__widget/custom_app_bar.dart';
 import 'package:flutter_save_password/app/common__widget/custom_button.dart';
-import 'package:flutter_save_password/models/user_model.dart';
+import 'package:flutter_save_password/app/helper/helper.dart';
+import 'package:flutter_save_password/init/navigation/navigation_constants.dart';
+import 'package:flutter_save_password/init/navigation/navigation_services.dart';
 import 'package:flutter_save_password/view_model/user_view_model.dart';
 import 'package:flutter_save_password/extensions/context_extension.dart';
 import 'package:flutter_save_password/extensions/color_extension.dart';
@@ -46,7 +48,7 @@ class _ProfilePageState extends State<ProfilePage> {
     if (userName == null) {
       userName = _userViewModel.user.userName;
       userMail = _userViewModel.user.userEmail;
-      userPhoto = _userViewModel.user.userPhoto;
+      userPhoto = _userViewModel.user.userPhotoNetwork;
     }
     return Scaffold(
       appBar: buildCustomAppBar,
@@ -93,6 +95,8 @@ class _ProfilePageState extends State<ProfilePage> {
             Text("Değişikliği kaydetmediniz devam etmek istiyor musunuz ? "),
         actions: onWillPopActions,
       ).goster(context);
+    } else {
+      Navigator.pop(context);
     }
   }
 
@@ -127,22 +131,18 @@ class _ProfilePageState extends State<ProfilePage> {
 
   Widget get buildCircleAvatar => GestureDetector(
         onTap: editUserFoto,
-        child: ClipOval(child: _file == null ? buildFadeInImage : fileImage),
-      );
-
-  Widget get fileImage => Image.file(
-        _file,
-        fit: BoxFit.fill,
-        width: context.width / 3,
-        height: context.height / 2,
-      );
-
-  Widget get buildFadeInImage => Image.network(
-        userPhoto,
-        fit: BoxFit.fill,
-        width: context.width / 3,
-        height: context.height / 2,
-      );
+        //child: ClipOval(child: _file == null ? buildFadeInImage : fileImage),
+    child: Container(
+      width: context.width / 3,
+      height: context.height /3,
+      child: CircleAvatar(
+        backgroundColor: Colors.white,
+        backgroundImage: _file == null
+            ? NetworkImage(userPhoto)
+            : FileImage(_file),
+      ),
+    ),
+  );
 
   TextFormField get buildNameTextFormField => TextFormField(
         initialValue: userName,
@@ -180,10 +180,7 @@ class _ProfilePageState extends State<ProfilePage> {
   appBarActionOnPress() {
     try {
       Provider.of<UserViewModel>(context, listen: false).signOut();
-      Navigator.pushAndRemoveUntil(
-          context,
-          MaterialPageRoute(builder: (context) => LangingPage()),
-          (Route<dynamic> route) => false);
+      NavigationServices.instance.navigateToPageClear(path: NavigationConstans.LANDING_PAGE);
     } catch (e) {
       MyCustomDialog(
         title: Center(child: Text("Hata")),
@@ -260,24 +257,7 @@ class _ProfilePageState extends State<ProfilePage> {
     Navigator.pop(context);
   }
 
-  RoundedRectangleBorder roundedRectangleBorder(BuildContext context) =>
-      RoundedRectangleBorder(borderRadius: context.borderHighRadiusHCircular);
-
-  Widget snackBar(txt) => SnackBar(
-        backgroundColor: Theme.of(context).primaryColor,
-        content: Row(
-          children: <Widget>[
-            Icon(Icons.thumb_up),
-            SizedBox(
-              width: 20,
-            ),
-            Expanded(
-              child: Text(txt),
-            ),
-          ],
-        ),
-      );
-
+  RoundedRectangleBorder roundedRectangleBorder(BuildContext context) => RoundedRectangleBorder(borderRadius: context.borderHighRadiusHCircular);
   saveButtonOnTap() async {
     if (chanceUserName) {
       var userViewmodel = Provider.of<UserViewModel>(context, listen: false);
@@ -286,11 +266,40 @@ class _ProfilePageState extends State<ProfilePage> {
       userViewmodel.updateUserData(currentUser);
     }
     if (chanceImage) {
+      showDialogForLoading();
       var result = await Provider.of<UserViewModel>(context, listen: false)
           .updateUserImage(_file);
-      if (result != null) {
-        _scaffoldKey.currentState.showSnackBar(snackBar("İşlem başarılı"));
-      }
+      Navigator.pop(context);
+      result == null ? Helper.showDefaultSnackBar(context, "İşlem başarılı"): showCustomDialog();
     }
+  }
+
+  showCustomDialog() {
+    MyCustomDialog(
+      content: Text("Bir hata oluştu"),
+      actions: [
+        RaisedButton(
+          child: Text("Tamam"),
+          onPressed: () {
+            Navigator.pop(context);
+          },
+        )
+      ],
+    ).goster(context);
+  }
+
+  showDialogForLoading() {
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        content: Container(
+          width: context.width / 5,
+          height: context.height / 5,
+          child: Center(
+            child: CircularProgressIndicator(),
+          ),
+        ),
+      ),
+    );
   }
 }

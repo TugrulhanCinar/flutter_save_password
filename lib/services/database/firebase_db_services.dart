@@ -1,4 +1,3 @@
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter_save_password/models/account_model.dart';
 import 'package:flutter_save_password/models/folder_model.dart';
@@ -99,7 +98,7 @@ class FirestoreDBService implements DBBase {
         .child(userID)
         .child("folders")
         .once();
-    List<Folder> folderList = List();
+    List<Folder> folderList  = [];
     if (snapshot.value != null) {
       var result = await snapshot.value.values as Iterable;
       for (var item in result) {

@@ -62,7 +62,6 @@ class _AddingFolderPageState extends State<AddingFolderPage> {
   Widget get _textField => TextField(
         maxLength: 10,
         controller: _textEditingController,
-        maxLengthEnforced: true,
         style: TextStyle(color: Colors.red),
         maxLines: 15,
         minLines: 1,

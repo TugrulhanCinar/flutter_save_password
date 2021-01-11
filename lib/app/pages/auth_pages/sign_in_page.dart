@@ -5,6 +5,8 @@ import 'package:flutter_save_password/app/pages/landing_page.dart';
 import 'package:flutter_save_password/extensions/context_extension.dart';
 import 'package:flutter_save_password/extensions/color_extension.dart';
 import 'package:flutter_save_password/extensions/string_extension.dart';
+import 'package:flutter_save_password/init/navigation/navigation_constants.dart';
+import 'package:flutter_save_password/init/navigation/navigation_services.dart';
 import 'package:flutter_save_password/models/user_model.dart';
 import 'package:flutter_save_password/view_model/user_view_model.dart';
 import 'package:provider/provider.dart';
@@ -182,10 +184,7 @@ class _SigninPageState extends State<SigninPage> {
       }
     }
     if(user != null){
-      Navigator.pushAndRemoveUntil(
-          context,
-          MaterialPageRoute(builder: (context) => LangingPage()),
-              (Route<dynamic> route) => false);
+      NavigationServices.instance.navigateToPageClear(path: NavigationConstans.LANDING_PAGE);
     }
   }
 

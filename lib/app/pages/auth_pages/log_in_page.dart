@@ -6,9 +6,10 @@ import 'package:flutter_save_password/app/common__widget/custom_alert_dialog.dar
 import 'package:flutter_save_password/app/common__widget/custom_button.dart';
 import 'package:flutter_save_password/app/exceptions/log_in_exceptions.dart';
 import 'package:flutter_save_password/app/pages/auth_pages/sign_in_page.dart';
-import 'package:flutter_save_password/app/pages/home_page.dart';
 import 'package:flutter_save_password/extensions/context_extension.dart';
 import 'package:flutter_save_password/extensions/color_extension.dart';
+import 'package:flutter_save_password/init/navigation/navigation_constants.dart';
+import 'package:flutter_save_password/init/navigation/navigation_services.dart';
 import 'package:flutter_save_password/view_model/user_view_model.dart';
 import 'package:provider/provider.dart';
 
@@ -98,13 +99,11 @@ class _LoginPageState extends State<LoginPage> {
       final UserViewModel _userViewModel = getViewModel(context);
       _formKey.currentState.save();
       try {
-        var result = await _userViewModel.signInWithEmailandPassword(email, password);
-        if (result != null) {
-          Navigator.pushAndRemoveUntil(
-              context,
-              MaterialPageRoute(builder: (context) => HomePage()),
-              (Route<dynamic> route) => false);
-        }
+        var result =
+            await _userViewModel.signInWithEmailandPassword(email, password);
+        if (result != null)
+          NavigationServices.instance
+              .navigateToPageClear(path: NavigationConstans.HOME_PAGE);
       } on FirebaseAuthException catch (e) {
         showCustomDialog(LoginExceptions.showException(e.message));
       } catch (e) {}
@@ -146,10 +145,8 @@ class _LoginPageState extends State<LoginPage> {
         onTap: _signInButtonOnTap,
       );
 
-  _signInButtonOnTap() {
-    Navigator.push(
-        context, MaterialPageRoute(builder: (context) => SigninPage()));
-  }
+  _signInButtonOnTap() => NavigationServices.instance
+      .navigateToPage(path: NavigationConstans.SIGN_IN_PAGE);
 
   Widget get _userNameTextFormField => TextFormField(
         keyboardType: TextInputType.emailAddress,
@@ -200,6 +197,7 @@ class _LoginPageState extends State<LoginPage> {
         gradient: linearGradient,
         boxShadow: boxShadow,
       );
+
   List<BoxShadow> get boxShadow {
     return [
       BoxShadow(
@@ -217,8 +215,6 @@ class _LoginPageState extends State<LoginPage> {
         tileMode: TileMode.clamp,
         colors: gradientColorList,
       );
-
-
 
   List<Color> get gradientColorList => [
         Theme.of(context).colorScheme.hexToColor("#272A4A"),

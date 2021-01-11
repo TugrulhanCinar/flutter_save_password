@@ -4,7 +4,7 @@ import 'auth_pages/log_in_page.dart';
 import 'home_page.dart';
 import 'package:provider/provider.dart';
 
-class LangingPage extends StatelessWidget {
+class LandingPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final _userViewModel = Provider.of<UserViewModel>(context);

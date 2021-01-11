@@ -16,7 +16,6 @@ class AccountSearch extends SearchDelegate<Account> {
 
   @override
   List<Widget> buildActions(BuildContext context) {
-    //addAllCurrentMatch();
     return [
       buildActionsIconButton
     ];

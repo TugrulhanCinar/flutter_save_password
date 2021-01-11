@@ -75,7 +75,7 @@ class UserViewModel with ChangeNotifier {
   Future<String> updateUserImage(File _image) async{
     state = UserViewState.Busy;
     var result = await _userRepository.updateUserImage(_image);
-    _user.userPhoto = result;
+    _user.userPhotoNetwork = result;
     state = UserViewState.Idle;
     return result;
   }

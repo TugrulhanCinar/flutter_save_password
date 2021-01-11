@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_save_password/app/common__widget/account_model.dart';
 import 'package:flutter_save_password/app/common__widget/custom_app_bar.dart';
-import 'file:///E:/flutterProject/flutter_save_password/lib/app/pages/add/adding_account.dart';
-import 'file:///E:/flutterProject/flutter_save_password/lib/app/pages/details/folder_settings_page.dart';
+import 'package:flutter_save_password/init/navigation/navigation_constants.dart';
+import 'package:flutter_save_password/init/navigation/navigation_services.dart';
 import 'package:flutter_save_password/models/account_model.dart';
 import 'package:flutter_save_password/models/folder_model.dart';
 import 'package:flutter_save_password/extensions/context_extension.dart';
@@ -10,7 +10,6 @@ import 'package:flutter_save_password/view_model/save_password_view_model.dart';
 import 'package:provider/provider.dart';
 
 class FolderDetailPage extends StatefulWidget {
-
   final int folderIndex;
 
   const FolderDetailPage({Key key, @required this.folderIndex})
@@ -58,14 +57,7 @@ class _FolderDetailPageState extends State<FolderDetailPage> {
     return IconButton(
       icon: Icon(Icons.add),
       onPressed: () {
-        Navigator.push(
-          context,
-          MaterialPageRoute(
-            builder: (context) => AddingAccountPage(
-              folder: folder,
-            ),
-          ),
-        );
+        NavigationServices.instance.navigateToPage(path: NavigationConstans.ADDING_ACCOUNT_PAGE,data: folder);
       },
     );
   }
@@ -74,12 +66,7 @@ class _FolderDetailPageState extends State<FolderDetailPage> {
     return IconButton(
       icon: Icon(Icons.settings),
       onPressed: () {
-        Navigator.push(
-            context,
-            MaterialPageRoute(
-                builder: (context) => FolderSetingsPage(
-                      folder: folder,
-                    )));
+        NavigationServices.instance.navigateToPage(path: NavigationConstans.FOLDER_SETTINGS_PAGE,data: folder);
       },
     );
   }

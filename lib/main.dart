@@ -1,6 +1,8 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_save_password/init/navigation/navigation_route.dart';
+import 'package:flutter_save_password/init/navigation/navigation_services.dart';
 import 'package:flutter_save_password/locator.dart';
 import 'package:flutter_save_password/view_model/save_password_view_model.dart';
 import 'package:nested/nested.dart';
@@ -13,12 +15,11 @@ void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
   runApp(MyApp());
-  SystemChrome.setPreferredOrientations(
-    [DeviceOrientation.portraitUp],
-  ).then(
-    (value) => runApp(MyApp()),
-  );
+  SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]).then((value) => runApp(MyApp()));
 }
+//todo fotoğraf indirilirken bir şey gözükmesini sağla
+//todo random password sayfası oluştur
+//todo genel renge karar ver!!
 
 class MyApp extends StatelessWidget {
   @override
@@ -31,7 +32,9 @@ class MyApp extends StatelessWidget {
 
   MaterialApp buildMaterialApp(BuildContext context) => MaterialApp(
         debugShowCheckedModeBanner: false,
-        home: LangingPage(),
+        navigatorKey: NavigationServices.instance.navigatorKey,
+        onGenerateRoute: NavigationRoute.instance.generateRoute,
+        home: LandingPage(),
         theme: buildCopyWith(context),
       );
 

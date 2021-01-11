@@ -1,19 +1,17 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/painting.dart';
 import 'package:flutter_save_password/app/common__widget/custom_alert_dialog.dart';
 import 'package:flutter_save_password/app/common__widget/custom_app_bar.dart';
 import 'package:flutter_save_password/app/common__widget/folder_container_widget.dart';
-import 'file:///E:/flutterProject/flutter_save_password/lib/app/pages/add/adding_folder.dart';
-import 'package:flutter_save_password/app/pages/favorite_page.dart';
-import 'file:///E:/flutterProject/flutter_save_password/lib/app/pages/details/folder_detail_page.dart';
+import 'package:flutter_save_password/init/navigation/navigation_constants.dart';
+import 'package:flutter_save_password/init/navigation/navigation_services.dart';
 import 'package:flutter_save_password/models/folder_model.dart';
 import 'package:flutter_save_password/extensions/color_extension.dart';
 import 'package:flutter_save_password/extensions/context_extension.dart';
 import 'package:flutter_save_password/view_model/save_password_view_model.dart';
 import 'package:flutter_save_password/view_model/user_view_model.dart';
 import 'package:provider/provider.dart';
-import 'landing_page.dart';
-import 'profile_page.dart';
 import 'search.dart';
 
 // ignore: must_be_immutable
@@ -63,17 +61,10 @@ class HomePage extends StatelessWidget {
   ListView buildDrawerBody(BuildContext context) {
     return ListView(
       children: [
-        buildContainerDrawerHeader(context),
+        buildDrawerHeader(context),
         favoritePageIconButton(context),
         profilePageIconButton(context),
       ],
-    );
-  }
-
-  Container buildContainerDrawerHeader(BuildContext context) {
-    return Container(
-      child: buildDrawerHeader(context),
-      color: Colors.red,
     );
   }
 
@@ -83,8 +74,7 @@ class HomePage extends StatelessWidget {
       leading: Icon(Icons.person),
       onTap: () {
         Navigator.pop(context);
-        Navigator.push(
-            context, MaterialPageRoute(builder: (context) => ProfilePage()));
+        NavigationServices.instance.navigateToPage(path: NavigationConstans.PROFILE_PAGE);
       },
     );
   }
@@ -95,8 +85,7 @@ class HomePage extends StatelessWidget {
       leading: Icon(Icons.favorite),
       onTap: () {
         Navigator.pop(context);
-        Navigator.push(
-            context, MaterialPageRoute(builder: (context) => FavoritePage()));
+        NavigationServices.instance.navigateToPage(path: NavigationConstans.FAVORITE_PAGE);
       },
     );
   }
@@ -108,10 +97,8 @@ class HomePage extends StatelessWidget {
       onTap: () {
         try {
           Provider.of<UserViewModel>(context, listen: false).signOut();
-          Navigator.pushAndRemoveUntil(
-              context,
-              MaterialPageRoute(builder: (context) => LangingPage()),
-              (Route<dynamic> route) => false);
+          NavigationServices.instance.navigateToPageClear(path: NavigationConstans.LANDING_PAGE);
+
         } catch (e) {
           MyCustomDialog(
             title: Center(child: Text("Hata")),
@@ -136,49 +123,30 @@ class HomePage extends StatelessWidget {
     );
   }
 
-  DrawerHeader buildDrawerHeader(BuildContext context) => DrawerHeader(
-        child: Container(),
-        duration: Duration(seconds: 1),
-        decoration: buildDrawerHeaderBoxDecoration(context),
-      );
-
-  BoxDecoration buildDrawerHeaderBoxDecoration(BuildContext context) =>
-      BoxDecoration(
-        color: Theme.of(context).colorScheme.genelRenk,
-        //borderRadius: BorderRadius.only(bottomRight: Radius.circular(30.0)),
-        image: drawerImage(context),
-        shape: BoxShape.circle,
-      );
-
-  DecorationImage drawerImage(BuildContext context) => DecorationImage(
-        image: NetworkImage(Provider.of<UserViewModel>(context).user.userPhoto),
-        fit: BoxFit.fill,
-      );
+  Widget buildDrawerHeader(BuildContext context) =>
+      DrawerHeader(child: buildDrawerHeaderItem(context));
 
   Column buildDrawerHeaderItem(BuildContext context) => Column(
         mainAxisAlignment: MainAxisAlignment.end,
         crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          buildNameAndMail(context),
-        ],
+        children: buildNameAndMail(context),
       );
 
-  ListTile buildNameAndMail(BuildContext context) => ListTile(
-        title: buildDrawerHeaderItemTitle(context),
-        subtitle: buildDrawerHeaderItemSubtitle(context),
-      );
+  List<Widget> buildNameAndMail(BuildContext context) => [
+        buildNameText(context),
+        buildMailText(context),
+      ];
 
-  Text buildDrawerHeaderItemSubtitle(BuildContext context) => Text(
+  Text buildNameText(BuildContext context) =>
+      Text(Provider.of<UserViewModel>(context).user.userName,
+          style: Theme.of(context).textTheme.headline5.copyWith(
+                color: Theme.of(context).colorScheme.genelRenk,
+              ));
+
+  Text buildMailText(BuildContext context) => Text(
         Provider.of<UserViewModel>(context).user.userEmail,
-        style: Theme.of(context).textTheme.caption.copyWith(),
+        style: Theme.of(context).textTheme.caption,
       );
-
-  Text buildDrawerHeaderItemTitle(BuildContext context) {
-    return Text(
-      Provider.of<UserViewModel>(context).user.userName,
-      style: Theme.of(context).textTheme.bodyText2,
-    );
-  }
 
   GridView get buildGridView => GridView.builder(
         gridDelegate: buildSliverGridDelegateWithFixedCrossAxisCount,
@@ -192,13 +160,7 @@ class HomePage extends StatelessWidget {
         color: folderList[index].folderColor,
         containerName: folderList[index].folderName,
         onTap: () {
-          Navigator.push(
-            context,
-            MaterialPageRoute(
-                builder: (context) => FolderDetailPage(
-                      folderIndex: index,
-                    )),
-          );
+          NavigationServices.instance.navigateToPage(path: NavigationConstans.FOLDER_DETAIL_PAGE,data: index);
         },
       );
 
@@ -227,10 +189,7 @@ class HomePage extends StatelessWidget {
     return FloatingActionButton(
       backgroundColor: Theme.of(context).colorScheme.genelRenk,
       onPressed: () {
-        Navigator.push(
-          context,
-          MaterialPageRoute(builder: (context) => AddingFolderPage()),
-        );
+        NavigationServices.instance.navigateToPage(path: NavigationConstans.ADDING_FOLDER_PAGE);
       },
       child: Icon(Icons.add),
     );
