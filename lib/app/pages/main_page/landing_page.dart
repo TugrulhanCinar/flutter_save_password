@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_save_password/view_model/user_view_model.dart';
-import 'auth_pages/log_in_page.dart';
+import '../auth_pages/log_in_page.dart';
 import 'home_page.dart';
 import 'package:provider/provider.dart';
 

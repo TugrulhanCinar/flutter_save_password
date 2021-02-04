@@ -5,7 +5,6 @@ import 'package:flutter/services.dart';
 import 'package:flutter_save_password/app/common__widget/custom_alert_dialog.dart';
 import 'package:flutter_save_password/app/common__widget/custom_button.dart';
 import 'package:flutter_save_password/app/exceptions/log_in_exceptions.dart';
-import 'package:flutter_save_password/app/pages/auth_pages/sign_in_page.dart';
 import 'package:flutter_save_password/extensions/context_extension.dart';
 import 'package:flutter_save_password/extensions/color_extension.dart';
 import 'package:flutter_save_password/init/navigation/navigation_constants.dart';
@@ -118,7 +117,17 @@ class _LoginPageState extends State<LoginPage> {
         Container(
           padding: context.paddingAllLowMedium,
           width: context.width,
-          child: RaisedButton(
+          child: MyCustomButton(
+            shapeBorder: roundedRectangleBorder,
+            buttonColor: Theme.of(context).colorScheme.genelRenk,
+            onTap: (){
+              Navigator.pop(context);
+            },
+
+          ),
+
+
+         /* child: RaisedButton(
             color: Colors.red,
             shape: roundedRectangleBorder,
             child: Text("Tamam"),
@@ -126,6 +135,10 @@ class _LoginPageState extends State<LoginPage> {
               Navigator.pop(context);
             },
           ),
+          */
+
+
+
         )
       ],
     ).goster(context);

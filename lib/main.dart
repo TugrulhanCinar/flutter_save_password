@@ -7,7 +7,7 @@ import 'package:flutter_save_password/locator.dart';
 import 'package:flutter_save_password/view_model/save_password_view_model.dart';
 import 'package:nested/nested.dart';
 import 'package:provider/provider.dart';
-import 'app/pages/landing_page.dart';
+import 'app/pages/main_page/landing_page.dart';
 import 'view_model/user_view_model.dart';
 
 void main() async {
@@ -17,9 +17,12 @@ void main() async {
   runApp(MyApp());
   SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]).then((value) => runApp(MyApp()));
 }
-//todo fotoğraf indirilirken bir şey gözükmesini sağla
-//todo random password sayfası oluştur
+
+
+
 //todo genel renge karar ver!!
+//todo local kaydetme işini yap
+//
 
 class MyApp extends StatelessWidget {
   @override
@@ -66,5 +69,5 @@ class MyApp extends StatelessWidget {
 
   TextStyle get bodyText1 => TextStyle(color: Colors.red);
 
-  TextStyle get bodyText2 => TextStyle(color: Colors.green);
+  TextStyle get bodyText2 => TextStyle(color: Colors.deepOrange);
 }

@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/painting.dart';
 import 'package:flutter_save_password/app/common__widget/custom_alert_dialog.dart';
 import 'package:flutter_save_password/app/common__widget/custom_app_bar.dart';
+import 'package:flutter_save_password/app/common__widget/custom_button.dart';
 import 'package:flutter_save_password/app/common__widget/folder_container_widget.dart';
 import 'package:flutter_save_password/init/navigation/navigation_constants.dart';
 import 'package:flutter_save_password/init/navigation/navigation_services.dart';
@@ -12,14 +13,14 @@ import 'package:flutter_save_password/extensions/context_extension.dart';
 import 'package:flutter_save_password/view_model/save_password_view_model.dart';
 import 'package:flutter_save_password/view_model/user_view_model.dart';
 import 'package:provider/provider.dart';
-import 'search.dart';
+import '../search.dart';
 
 // ignore: must_be_immutable
 class HomePage extends StatelessWidget {
   final String appBarTitle = "App bar Title";
   final String drawerFavoriteTitle = "Favoriler";
-  final String createRandomPasswordTitle = "Şifre Oluştur";
   final String profileFavoriteTitle = "Profile";
+  final String createPasswordTitle = "Şifre yarat";
   final String signOutFavoriteTitle = "Çıkış yap";
   List<Folder> folderList;
 
@@ -64,6 +65,7 @@ class HomePage extends StatelessWidget {
         buildDrawerHeader(context),
         favoritePageIconButton(context),
         profilePageIconButton(context),
+        createPasswordPageIconButton(context),
       ],
     );
   }
@@ -79,6 +81,16 @@ class HomePage extends StatelessWidget {
     );
   }
 
+  ListTile createPasswordPageIconButton(BuildContext context) {
+    return ListTile(
+      title: Text(createPasswordTitle),
+      leading: Icon(Icons.animation),
+      onTap: () {
+        Navigator.pop(context);
+        NavigationServices.instance.navigateToPage(path: NavigationConstans.CREATE_PASSWORD_PAGE);
+      },
+    );
+  }
   ListTile favoritePageIconButton(BuildContext context) {
     return ListTile(
       title: Text(drawerFavoriteTitle),
@@ -107,11 +119,10 @@ class HomePage extends StatelessWidget {
               Container(
                 padding: context.paddingAllLowMedium,
                 width: context.width,
-                child: RaisedButton(
-                  color: Colors.red,
-                  shape: roundedRectangleBorder(context),
-                  child: Text("Tamam"),
-                  onPressed: () {
+
+                child: MyCustomButton(
+                  buttonColor: Theme.of(context).colorScheme.genelRenk,
+                  onTap:  () {
                     Navigator.pop(context);
                   },
                 ),
@@ -122,6 +133,7 @@ class HomePage extends StatelessWidget {
       },
     );
   }
+
 
   Widget buildDrawerHeader(BuildContext context) =>
       DrawerHeader(child: buildDrawerHeaderItem(context));
@@ -172,10 +184,7 @@ class HomePage extends StatelessWidget {
 
   List<Widget> appBarActions(BuildContext context) => [
         IconButton(
-          icon: Icon(
-            Icons.search,
-            color: Colors.white,
-          ),
+          icon: searchIcon,
           onPressed: () {
             showSearch(
               context: context,
@@ -184,6 +193,13 @@ class HomePage extends StatelessWidget {
           },
         )
       ];
+
+  Icon get searchIcon {
+    return Icon(
+          Icons.search,
+          color: Colors.white,
+        );
+  }
 
   FloatingActionButton buildFloatingActionButton(BuildContext context) {
     return FloatingActionButton(

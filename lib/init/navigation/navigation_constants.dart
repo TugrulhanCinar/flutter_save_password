@@ -10,4 +10,5 @@ class NavigationConstans{
   static const FAVORITE_PAGE = "/favorite_page";
   static const LANDING_PAGE = "/landing_page";
   static const PROFILE_PAGE = "/profile_page";
+  static const CREATE_PASSWORD_PAGE = "/create_page";
 }

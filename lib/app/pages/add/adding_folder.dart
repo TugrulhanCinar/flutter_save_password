@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_save_password/app/common__widget/custom_app_bar.dart';
+import 'package:flutter_save_password/app/common__widget/custom_button.dart';
 import 'package:flutter_save_password/extensions/context_extension.dart';
 import 'package:flutter_save_password/extensions/color_extension.dart';
 import 'package:flutter_save_password/models/folder_model.dart';
@@ -44,11 +45,22 @@ class _AddingFolderPageState extends State<AddingFolderPage> {
         ),
       );
 
-  Widget get _createButton => RaisedButton(
-        color: Colors.deepOrange,
-        onPressed: _createButtonOnTap,
-        child: _createButtonContainer,
-      );
+  Widget get _createButton{
+
+    return MyCustomButton(
+      onTap: _createButtonOnTap,
+      buttonColor: Theme.of(context).colorScheme.genelRenk,
+      child: _createButtonContainer,
+      //buttonText: ,
+
+    );
+
+ /*   return RaisedButton(
+      color: Colors.deepOrange,
+      onPressed: _createButtonOnTap,
+      child: _createButtonContainer,
+    );*/
+  }
 
   Widget get _createButtonContainer => Container(
         width: context.width,

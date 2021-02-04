@@ -4,8 +4,10 @@ import 'package:flutter_save_password/extensions/context_extension.dart';
 class MyCustomButton extends StatelessWidget {
   final VoidCallback onTap;
   final String buttonText;
+  final Widget child;
   final Color buttonColor;
   final Color textColor;
+  final RoundedRectangleBorder shapeBorder;
 
   const MyCustomButton({
     Key key,
@@ -13,7 +15,12 @@ class MyCustomButton extends StatelessWidget {
     this.buttonText,
     this.buttonColor: Colors.white,
     this.textColor: Colors.redAccent,
-  }) : super(key: key);
+    this.shapeBorder,
+    this.child,
+  }) : assert(
+          child == null || buttonText == null,
+          "Both Child and Button Text cannot be used at the same time.",
+        );
 
   @override
   Widget build(BuildContext context) {
@@ -23,27 +30,29 @@ class MyCustomButton extends StatelessWidget {
     );
   }
 
-  RaisedButton buildRaisedButton(BuildContext context) {
-    return RaisedButton(
+  Widget buildRaisedButton(BuildContext context) {
+
+    return MaterialButton(
+      child: child == null ? buildText(context) : child,
       onPressed: onTap,
-      child: buildText(context),
       color: buttonColor,
-      shape: roundedRectangleBorder(context),
+      //todo shape seçeneği ekle
+
     );
   }
 
   Text buildText(BuildContext context) {
     return Text(
-        buttonText,
-        style: buildTextStyle(context),
-      );
+      buttonText,
+      style: buildTextStyle(context),
+    );
   }
 
   TextStyle buildTextStyle(BuildContext context) {
     return Theme.of(context).textTheme.bodyText2.copyWith(
-              color: textColor,
-              fontWeight: FontWeight.bold,
-            );
+          color: textColor,
+          fontWeight: FontWeight.bold,
+        );
   }
 
   RoundedRectangleBorder roundedRectangleBorder(BuildContext context) =>

@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_save_password/app/common__widget/custom_alert_dialog.dart';
 import 'package:flutter_save_password/app/common__widget/custom_app_bar.dart';
+import 'package:flutter_save_password/app/common__widget/custom_button.dart';
 import 'package:flutter_save_password/app/helper/helper.dart';
-import 'package:flutter_save_password/app/pages/home_page.dart';
 import 'package:flutter_save_password/extensions/context_extension.dart';
 import 'package:flutter_save_password/extensions/color_extension.dart';
 import 'package:flutter_save_password/init/navigation/navigation_constants.dart';
@@ -83,17 +83,12 @@ class _FolderSetingsPageState extends State<FolderSetingsPage> {
         onPressed: onWillPop,
       );
 
-  Widget get _saveButton => RaisedButton(
-        color: Colors.deepOrange,
-        onPressed: _saveButtonOnPress,
-        child: _createButtonContainer,
-      );
+  Widget get _saveButton => MyCustomButton(
+      buttonColor: Theme.of(context).colorScheme.genelRenk,
+      onTap: _saveButtonOnPress,
+      child: _createButtonContainerText,
+    );
 
-  Widget get _createButtonContainer => Container(
-        width: context.width,
-        alignment: Alignment.center,
-        child: _createButtonContainerText,
-      );
 
   Widget get _createButtonContainerText => Text(
         buttonText,
@@ -173,15 +168,15 @@ class _FolderSetingsPageState extends State<FolderSetingsPage> {
       [
         ButtonBar(
           children: [
-            RaisedButton(
-              child: Text(button2Txt),
-              color: Theme.of(context).colorScheme.genelRenk,
-              onPressed: button2OnTap,
+            MyCustomButton(
+              onTap: button2OnTap,
+              buttonText: button2Txt,
+              buttonColor: Theme.of(context).colorScheme.genelRenk,
             ),
-            RaisedButton(
-              child: Text(button1Txt),
-              color: Theme.of(context).colorScheme.genelRenk,
-              onPressed: button1OnTap,
+            MyCustomButton(
+              onTap: button1OnTap,
+              buttonText: button1Txt,
+              buttonColor: Theme.of(context).colorScheme.genelRenk,
             ),
           ],
         )

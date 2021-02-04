@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_save_password/app/common__widget/custom_button.dart';
 import 'package:flutter_save_password/init/navigation/navigation_constants.dart';
 import 'package:flutter_save_password/init/navigation/navigation_services.dart';
-import 'file:///E:/flutterProject/flutter_save_password/lib/app/pages/details/account_details_page.dart';
 import 'package:flutter_save_password/models/account_model.dart';
 import 'package:flutter_save_password/view_model/save_password_view_model.dart';
 import 'package:intl/intl.dart';
@@ -52,7 +52,8 @@ class AccountModelWidget extends StatelessWidget {
       );
 
   listTileOnTap(BuildContext context) async {
-    NavigationServices.instance.navigateToPage(path: NavigationConstans.ACCOUNT_DETAIL_PAGE,data: _account);
+    NavigationServices.instance.navigateToPage(
+        path: NavigationConstans.ACCOUNT_DETAIL_PAGE, data: _account);
   }
 
   Widget favoriteIconButton(BuildContext context) {
@@ -112,14 +113,33 @@ class AccountModelWidget extends StatelessWidget {
   List<Widget> dialogChilderen(Account account, BuildContext context) => [
         ButtonBar(
           children: [
-            RaisedButton(
+            MyCustomButton(
+              buttonText: "Vazgeç",
+              onTap: () {
+                Navigator.pop(context);
+              },
+              buttonColor: Theme.of(context).colorScheme.genelRenk,
+            ),
+
+            MyCustomButton(
+              buttonText: "Sil",
+              onTap: () {
+                final _savePass =
+                Provider.of<PasswordSaveViewModel>(context, listen: false);
+                _savePass.deleteAccount(account);
+                Navigator.pop(context);
+              },
+              buttonColor: Theme.of(context).colorScheme.genelRenk,
+            ),
+            /*    RaisedButton(
               child: Text("Vazgeç"),
               color: Theme.of(context).colorScheme.genelRenk,
               onPressed: () {
                 Navigator.pop(context);
               },
             ),
-            RaisedButton(
+
+                 RaisedButton(
               child: Text("Sil"),
               color: Theme.of(context).colorScheme.genelRenk,
               onPressed: () {
@@ -129,6 +149,11 @@ class AccountModelWidget extends StatelessWidget {
                 Navigator.pop(context);
               },
             ),
+
+
+
+            */
+
           ],
         )
       ];

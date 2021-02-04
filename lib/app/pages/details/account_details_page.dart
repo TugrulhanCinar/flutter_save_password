@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_save_password/app/common__widget/custom_app_bar.dart';
+import 'package:flutter_save_password/app/common__widget/custom_button.dart';
 import 'package:flutter_save_password/extensions/context_extension.dart';
 import 'package:flutter_save_password/extensions/color_extension.dart';
 import 'package:flutter_save_password/models/account_model.dart';
@@ -101,11 +102,18 @@ class _AccountDetailPageState extends State<AccountDetailPage> {
         },
       );
 
-  Widget get _createButton => RaisedButton(
-        color: Theme.of(context).colorScheme.genelRenk,
-        onPressed: _createButtonOnTap,
-        child: _createButtonContainer,
-      );
+  Widget get _createButton{
+   return MyCustomButton(
+     onTap: _createButtonOnTap,
+     buttonColor: Theme.of(context).colorScheme.genelRenk,
+     child: _createButtonContainer,
+   );
+  /* return RaisedButton(
+      color: Theme.of(context).colorScheme.genelRenk,
+      onPressed: _createButtonOnTap,
+      child: _createButtonContainer,
+    );*/
+  }
 
   Widget get _createButtonContainer => Container(
         width: context.width,
@@ -153,6 +161,7 @@ class _AccountDetailPageState extends State<AccountDetailPage> {
       onPressed: passwordTextFieldOnTap,
     );
   }
+
 
   passwordTextFieldOnTap() {
     setState(() {

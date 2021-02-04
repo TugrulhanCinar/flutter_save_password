@@ -8,10 +8,11 @@ import 'package:flutter_save_password/app/pages/auth_pages/sign_in_page.dart';
 import 'package:flutter_save_password/app/pages/details/account_details_page.dart';
 import 'package:flutter_save_password/app/pages/details/folder_detail_page.dart';
 import 'package:flutter_save_password/app/pages/details/folder_settings_page.dart';
-import 'package:flutter_save_password/app/pages/favorite_page.dart';
-import 'package:flutter_save_password/app/pages/home_page.dart';
-import 'package:flutter_save_password/app/pages/landing_page.dart';
-import 'package:flutter_save_password/app/pages/profile_page.dart';
+import 'package:flutter_save_password/app/pages/drawer_page/creat_password_page.dart';
+import 'package:flutter_save_password/app/pages/drawer_page/profile_page.dart';
+import 'file:///E:/flutterProject/flutter_save_password/lib/app/pages/drawer_page/favorite_page.dart';
+import 'file:///E:/flutterProject/flutter_save_password/lib/app/pages/main_page/home_page.dart';
+import 'file:///E:/flutterProject/flutter_save_password/lib/app/pages/main_page/landing_page.dart';
 import 'package:flutter_save_password/init/navigation/navigation_constants.dart';
 
 class NavigationRoute {
@@ -65,6 +66,11 @@ class NavigationRoute {
 
       case NavigationConstans.PROFILE_PAGE:
         return normalNavigate(ProfilePage());
+        break;
+
+
+      case NavigationConstans.CREATE_PASSWORD_PAGE:
+        return normalNavigate(CreatePasswordPage());
         break;
 
       default:

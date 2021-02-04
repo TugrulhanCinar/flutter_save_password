@@ -12,6 +12,7 @@ extension CustomColorScheme on ColorScheme {
   Color get danger => const Color(0xFFdc3545);
 
   Color get genelRenk => Colors.deepOrange;
+  Color get genelTextColorRenk => Colors.white;
 
   List<Color> get allFolderColor => [
         Colors.redAccent,
