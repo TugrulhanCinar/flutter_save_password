@@ -11,9 +11,11 @@ class LandingPage extends StatelessWidget {
     if (_userViewModel.state == UserViewState.Busy) {
       return buildCenterCircularProgressIndicator;
     } else {
+
       if (_userViewModel.user == null) {
         return LoginPage();
       } else {
+
         return HomePage();
       }
     }
@@ -26,4 +28,7 @@ class LandingPage extends StatelessWidget {
       ),
     );
   }
+
+
+
 }

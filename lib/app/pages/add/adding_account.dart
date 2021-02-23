@@ -135,8 +135,7 @@ class _AddingAccountPageState extends State<AddingAccountPage> {
   }
 
   void _createButtonOnTap() async{
-    final _passwordSave =
-        Provider.of<PasswordSaveViewModel>(context, listen: false);
+    final _passwordSave = Provider.of<PasswordSaveViewModel>(context, listen: false);
     bool result = false;
     Account account;
     if (_formKey.currentState.validate()) {

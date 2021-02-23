@@ -8,21 +8,23 @@ import 'package:flutter_save_password/view_model/save_password_view_model.dart';
 import 'package:nested/nested.dart';
 import 'package:provider/provider.dart';
 import 'app/pages/main_page/landing_page.dart';
+import 'init/cache/locale_manager.dart';
 import 'view_model/user_view_model.dart';
 
+//todo genel renge karar ver
+
 void main() async {
-  setup();
   WidgetsFlutterBinding.ensureInitialized();
+  setup();
+  LocalManager.prefrencesInit();
   await Firebase.initializeApp();
   runApp(MyApp());
-  SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]).then((value) => runApp(MyApp()));
+  SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp])
+      .then((value) => runApp(MyApp()));
 }
 
 
 
-//todo genel renge karar ver!!
-//todo local kaydetme işini yap
-//
 
 class MyApp extends StatelessWidget {
   @override
@@ -41,24 +43,20 @@ class MyApp extends StatelessWidget {
         theme: buildCopyWith(context),
       );
 
-  List<SingleChildWidget> get providers {
-    return [
-      ChangeNotifierProvider<UserViewModel>(create: (_) => UserViewModel()),
-      ChangeNotifierProvider<PasswordSaveViewModel>(
-          create: (_) => PasswordSaveViewModel()),
-    ];
-  }
+  List<SingleChildWidget> get providers => [
+        ChangeNotifierProvider<UserViewModel>(create: (_) => UserViewModel()),
+        ChangeNotifierProvider<PasswordSaveViewModel>(
+            create: (_) => PasswordSaveViewModel()),
+       // StreamProvider<DataConnectionStatus>(create: (context) => ConnectivityService().controller.stream,),
+      ];
 
   ThemeData buildCopyWith(BuildContext context) => Theme.of(context).copyWith(
         textTheme: buildTextTheme(context),
         iconTheme: buildIconTheme(context),
       );
 
-  IconThemeData buildIconTheme(BuildContext context) {
-    return Theme.of(context).iconTheme.copyWith(
-          color: Colors.white,
-        );
-  }
+  IconThemeData buildIconTheme(BuildContext context) =>
+      Theme.of(context).iconTheme.copyWith(color: Colors.white);
 
   TextTheme buildTextTheme(BuildContext context) {
     return Theme.of(context).textTheme.copyWith(
@@ -71,3 +69,17 @@ class MyApp extends StatelessWidget {
 
   TextStyle get bodyText2 => TextStyle(color: Colors.deepOrange);
 }
+/*
+Lazy singeloton =>
+
+
+  static LocalManager _instance = LocalManager._init();
+  static LocalManager get instance => _instance;
+
+  static LocalManager _init(){
+
+  }
+
+
+
+ */

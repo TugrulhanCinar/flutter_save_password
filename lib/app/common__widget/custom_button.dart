@@ -26,17 +26,16 @@ class MyCustomButton extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       width: context.width,
-      child: buildRaisedButton(context),
+      child: button(context),
     );
   }
 
-  Widget buildRaisedButton(BuildContext context) {
-
+  Widget button(BuildContext context) {
     return MaterialButton(
       child: child == null ? buildText(context) : child,
       onPressed: onTap,
       color: buttonColor,
-      //todo shape seçeneği ekle
+      shape: shapeBorder,
 
     );
   }

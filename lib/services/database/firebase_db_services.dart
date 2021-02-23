@@ -9,11 +9,7 @@ class FirestoreDBService implements DBBase {
 
 
   Future<bool> updateUserName(UserModel user,String userID) async{
-
-
     try{
-     /* Map<dynamic,dynamic> map = Map();
-      map["user_name"] = userName;*/
       await databaseReference
           .child('users')
           .child(userID)
@@ -25,24 +21,6 @@ class FirestoreDBService implements DBBase {
       return false;
     }
   }
-  /*
-
-  Future<bool> updateUserName(String userName,String userID) async{
-    try{
-      Map<dynamic,dynamic> map = Map();
-      map["user_name"] = userName;
-      await databaseReference
-          .child('users')
-          .child(userID)
-          .child("user_data")
-          .update(map);
-      return true;
-    }catch(e){
-      print("updateUserName hata: " + e.toString());
-      return false;
-    }
-  }
-   */
 
   Future<bool> writeUserData(UserModel userModel) async {
     try {

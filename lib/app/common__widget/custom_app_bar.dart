@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_save_password/extensions/color_extension.dart';
+
 class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
   final String appTitle;
   final List<Widget> actions;

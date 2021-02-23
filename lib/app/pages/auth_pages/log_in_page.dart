@@ -104,8 +104,12 @@ class _LoginPageState extends State<LoginPage> {
           NavigationServices.instance
               .navigateToPageClear(path: NavigationConstans.HOME_PAGE);
       } on FirebaseAuthException catch (e) {
+
         showCustomDialog(LoginExceptions.showException(e.message));
-      } catch (e) {}
+      } catch (e) {
+        print("loginButtonOnTap hata " + e.toString());
+        print(e);
+      }
     }
   }
 
@@ -115,30 +119,15 @@ class _LoginPageState extends State<LoginPage> {
       content: Text(text),
       actions: [
         Container(
-          padding: context.paddingAllLowMedium,
+          padding: EdgeInsets.all(20),
           width: context.width,
           child: MyCustomButton(
             shapeBorder: roundedRectangleBorder,
             buttonColor: Theme.of(context).colorScheme.genelRenk,
-            onTap: (){
-              Navigator.pop(context);
-            },
-
-          ),
-
-
-         /* child: RaisedButton(
-            color: Colors.red,
-            shape: roundedRectangleBorder,
-            child: Text("Tamam"),
-            onPressed: () {
+            onTap: () {
               Navigator.pop(context);
             },
           ),
-          */
-
-
-
         )
       ],
     ).goster(context);
@@ -164,7 +153,8 @@ class _LoginPageState extends State<LoginPage> {
   Widget get _userNameTextFormField => TextFormField(
         keyboardType: TextInputType.emailAddress,
         style: TextStyle(color: Colors.white),
-        decoration: context.customInputDecoration(userNameLabelText),
+        decoration: context.customInputDecoration(userNameLabelText,
+            color: Colors.white),
         onSaved: (currentMail) {
           email = currentMail;
         },
@@ -178,6 +168,7 @@ class _LoginPageState extends State<LoginPage> {
         },
         decoration: context.customInputDecoration(
           passwordLabelText,
+          color: Colors.white,
           suffixIcon: textFieldIcon,
         ),
       );

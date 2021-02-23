@@ -4,6 +4,10 @@ import 'package:firebase_auth/firebase_auth.dart';
 
 class FirebaseAuthServices implements AuthBase {
   final FirebaseAuth _firebaseAuth = FirebaseAuth.instance;
+  //final UserModel userModel;
+  //todo buraya methodlara user yollamadan almnanın yolunu bul
+
+ // FirebaseAuthServices({this.userModel});
 
   @override
   Future<UserModel> signInWithEmailandPassword(

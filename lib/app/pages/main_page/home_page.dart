@@ -34,6 +34,15 @@ class HomePage extends StatelessWidget {
     );
   }
 
+  Widget get internetNotAvailable => Container(
+        alignment: Alignment.center,
+        color: Colors.grey,
+        child: Text(
+          "İnternet bağlantınızı kontrol ediniz",
+          style: TextStyle(color: Colors.white, fontSize: 18),
+        ),
+      );
+
   Consumer<PasswordSaveViewModel> get buildBody =>
       Consumer<PasswordSaveViewModel>(
         builder: (context, cart, child) {
@@ -76,7 +85,8 @@ class HomePage extends StatelessWidget {
       leading: Icon(Icons.person),
       onTap: () {
         Navigator.pop(context);
-        NavigationServices.instance.navigateToPage(path: NavigationConstans.PROFILE_PAGE);
+        NavigationServices.instance
+            .navigateToPage(path: NavigationConstans.PROFILE_PAGE);
       },
     );
   }
@@ -87,17 +97,20 @@ class HomePage extends StatelessWidget {
       leading: Icon(Icons.animation),
       onTap: () {
         Navigator.pop(context);
-        NavigationServices.instance.navigateToPage(path: NavigationConstans.CREATE_PASSWORD_PAGE);
+        NavigationServices.instance
+            .navigateToPage(path: NavigationConstans.CREATE_PASSWORD_PAGE);
       },
     );
   }
+
   ListTile favoritePageIconButton(BuildContext context) {
     return ListTile(
       title: Text(drawerFavoriteTitle),
       leading: Icon(Icons.favorite),
       onTap: () {
         Navigator.pop(context);
-        NavigationServices.instance.navigateToPage(path: NavigationConstans.FAVORITE_PAGE);
+        NavigationServices.instance
+            .navigateToPage(path: NavigationConstans.FAVORITE_PAGE);
       },
     );
   }
@@ -109,8 +122,8 @@ class HomePage extends StatelessWidget {
       onTap: () {
         try {
           Provider.of<UserViewModel>(context, listen: false).signOut();
-          NavigationServices.instance.navigateToPageClear(path: NavigationConstans.LANDING_PAGE);
-
+          NavigationServices.instance
+              .navigateToPageClear(path: NavigationConstans.LANDING_PAGE);
         } catch (e) {
           MyCustomDialog(
             title: Center(child: Text("Hata")),
@@ -119,10 +132,9 @@ class HomePage extends StatelessWidget {
               Container(
                 padding: context.paddingAllLowMedium,
                 width: context.width,
-
                 child: MyCustomButton(
                   buttonColor: Theme.of(context).colorScheme.genelRenk,
-                  onTap:  () {
+                  onTap: () {
                     Navigator.pop(context);
                   },
                 ),
@@ -133,7 +145,6 @@ class HomePage extends StatelessWidget {
       },
     );
   }
-
 
   Widget buildDrawerHeader(BuildContext context) =>
       DrawerHeader(child: buildDrawerHeaderItem(context));
@@ -172,7 +183,8 @@ class HomePage extends StatelessWidget {
         color: folderList[index].folderColor,
         containerName: folderList[index].folderName,
         onTap: () {
-          NavigationServices.instance.navigateToPage(path: NavigationConstans.FOLDER_DETAIL_PAGE,data: index);
+          NavigationServices.instance.navigateToPage(
+              path: NavigationConstans.FOLDER_DETAIL_PAGE, data: index);
         },
       );
 
@@ -196,16 +208,17 @@ class HomePage extends StatelessWidget {
 
   Icon get searchIcon {
     return Icon(
-          Icons.search,
-          color: Colors.white,
-        );
+      Icons.search,
+      color: Colors.white,
+    );
   }
 
   FloatingActionButton buildFloatingActionButton(BuildContext context) {
     return FloatingActionButton(
       backgroundColor: Theme.of(context).colorScheme.genelRenk,
       onPressed: () {
-        NavigationServices.instance.navigateToPage(path: NavigationConstans.ADDING_FOLDER_PAGE);
+        NavigationServices.instance
+            .navigateToPage(path: NavigationConstans.ADDING_FOLDER_PAGE);
       },
       child: Icon(Icons.add),
     );

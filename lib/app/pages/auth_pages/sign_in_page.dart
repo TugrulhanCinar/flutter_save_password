@@ -74,7 +74,7 @@ class _SigninPageState extends State<SigninPage> {
           userMail = text;
         },
         decoration:
-        context.customInputDecoration(userMailTextFormFieldLabelText),
+        context.customInputDecoration(userMailTextFormFieldLabelText,color: Colors.white),
       );
 
   TextFormField get userNameTextFormField =>
@@ -85,7 +85,7 @@ class _SigninPageState extends State<SigninPage> {
           userName = text;
         },
         decoration:
-        context.customInputDecoration(userNameTextFormFieldLabelText),
+        context.customInputDecoration(userNameTextFormFieldLabelText,color: Colors.white),
       );
 
   TextFormField get userPasswordTextFormField =>
@@ -98,7 +98,7 @@ class _SigninPageState extends State<SigninPage> {
           userPassword = text;
         },
         decoration:
-        context.customInputDecoration(userPasswordTextFormFieldLabelText),
+        context.customInputDecoration(userPasswordTextFormFieldLabelText,color: Colors.white),
       );
 
 
@@ -118,7 +118,7 @@ class _SigninPageState extends State<SigninPage> {
           userPasswordAgain = text;
         },
         decoration: context.customInputDecoration(
-            userPasswordTextFormFieldLabelText + " Tekrar"),
+            userPasswordTextFormFieldLabelText + " Tekrar",color: Colors.white),
       );
 
   TextStyle get textFormFieldTextStyle =>
@@ -192,12 +192,16 @@ class _SigninPageState extends State<SigninPage> {
       title: Text('Hata'),
       content: Text(text),
       actions: [
-        MyCustomButton(
-          buttonText: "Tamam",
-          buttonColor: Colors.redAccent,
-          onTap: () {
-            Navigator.pop(context);
-          },
+        Container(
+          padding: context.paddingAllhigh,
+          child: MyCustomButton(
+            buttonText: "Tamam",
+            buttonColor: Colors.redAccent,
+            textColor: Colors.white,
+            onTap: () {
+              Navigator.pop(context);
+            },
+          ),
         ),
       ],
     ).goster(context);
