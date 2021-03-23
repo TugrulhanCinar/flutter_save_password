@@ -23,16 +23,16 @@ class _ProfilePageState extends State<ProfilePage> {
       "https://miro.medium.com/max/1200/1*mk1-6aYaf_Bes1E3Imhc0A.jpeg";
   final picker = ImagePicker();
   final _scaffoldKey = GlobalKey<ScaffoldState>();
-  File _file;
+  File? _file;
   final String appTitle = "Profil";
   final String buttonText = "Kaydet";
   final String signOutButtonToolTip = "Çıkış";
   final String editImageButtonToolTip = "Resmi değiştir";
   final String userNameTextFormFieldLabelText = "User Name";
   final String userMailTextFormFieldLabelText = "Mail";
-  String userName, userMail, userPhoto;
-  bool chanceUserName;
-  bool chanceImage;
+  String? userName, userMail, userPhoto;
+  late bool chanceUserName;
+  late bool chanceImage;
 
   var loadingGifLocaleUrl = "assets/";
 
@@ -47,9 +47,9 @@ class _ProfilePageState extends State<ProfilePage> {
   Widget build(BuildContext context) {
     final _userViewModel = Provider.of<UserViewModel>(context);
     if (userName == null) {
-      userName = _userViewModel.user.userName;
-      userMail = _userViewModel.user.userEmail;
-      userPhoto = _userViewModel.user.userPhotoNetwork;
+      userName = _userViewModel.user!.userName;
+      userMail = _userViewModel.user!.userEmail;
+      userPhoto = _userViewModel.user!.userPhotoNetwork;
     }
     return Scaffold(
       appBar: buildCustomAppBar,
@@ -143,9 +143,9 @@ class _ProfilePageState extends State<ProfilePage> {
   Widget get fileImage {
     return ClipOval(
       child: FadeInImage(
-        placeholder: FileImage(_file),
+        placeholder: FileImage(_file!),
         fit: BoxFit.cover,
-        image: FileImage(_file),
+        image: FileImage(_file!),
       ),
     );
   }
@@ -154,7 +154,7 @@ class _ProfilePageState extends State<ProfilePage> {
         child: FadeInImage.assetNetwork(
           placeholder: LOADING_GIF,
           fit: BoxFit.cover,
-          image: userPhoto,
+          image: userPhoto!,
         ),
       );
 
@@ -177,7 +177,7 @@ class _ProfilePageState extends State<ProfilePage> {
       );
 
   TextStyle get _textStyle =>
-      Theme.of(context).textTheme.bodyText1.copyWith(color: Colors.redAccent);
+      Theme.of(context).textTheme.bodyText1!.copyWith(color: Colors.redAccent);
 
   InputDecoration get inputDecoration => InputDecoration(
         labelStyle: TextStyle(color: Colors.redAccent),
@@ -199,7 +199,7 @@ class _ProfilePageState extends State<ProfilePage> {
     } catch (e) {
       MyCustomDialog(
         title: Center(child: Text("Hata")),
-        content: Text("Bir hata oluştu: " + e.message.toString()),
+        content: Text("Bir hata oluştu: " + e.toString()),
         actions: [
           Container(
             padding: context.paddingAllLowMedium,
@@ -274,7 +274,7 @@ class _ProfilePageState extends State<ProfilePage> {
   saveButtonOnTap() async {
     if (chanceUserName) {
       var userViewmodel = Provider.of<UserViewModel>(context, listen: false);
-      var currentUser = userViewmodel.user;
+      var currentUser = userViewmodel.user!;
       currentUser.userName = userName;
       userViewmodel.updateUserData(currentUser);
     }

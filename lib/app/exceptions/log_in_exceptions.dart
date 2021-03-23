@@ -1,5 +1,5 @@
 class LoginExceptions {
-  static String showException(String exception) {
+  static String showException(String? exception) {
     switch (exception) {
       case 'The email address is badly formatted.':
         return "Hatalı mail adresi";

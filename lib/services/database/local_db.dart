@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'package:flutter_save_password/models/account_model.dart';
 import 'package:flutter_save_password/models/folder_model.dart';
 import 'package:flutter_save_password/models/user_model.dart';
@@ -8,9 +9,9 @@ import 'package:path/path.dart';
 class LocalDbHelper extends DBBase {
   static const DB_VERSION = 1;
 
-  static LocalDbHelper _sqliteDbServices;
+  static LocalDbHelper? _sqliteDbServices;
   static const DB_NAME = "save_password";
-  static Database _database;
+  static Database? _database;
 
   ///Folder db
   final String _folder = "folder";
@@ -25,7 +26,7 @@ class LocalDbHelper extends DBBase {
   ///Account db :
   final String _account = "account";
   final String _accountID = "account_id";
-  final String _accountIDLocale = "account_id_locale";
+//  final String _accountIDLocale = "account_id_locale";
   final String _accountName = "account_name";
   final String _accountEmail = "account_mail";
   final String _accountPassword = "account_password";
@@ -45,13 +46,13 @@ class LocalDbHelper extends DBBase {
   factory LocalDbHelper() {
     if (_sqliteDbServices == null) {
       _sqliteDbServices = LocalDbHelper._internal();
-      return _sqliteDbServices;
+      return _sqliteDbServices!;
     } else {
-      return _sqliteDbServices;
+      return _sqliteDbServices!;
     }
   }
 
-  Future<Database> _getDataBase() async {
+  Future<Database?> _getDataBase() async {
     if (_database == null) {
       _database = await initializeDatabase();
       return _database;
@@ -62,7 +63,7 @@ class LocalDbHelper extends DBBase {
 
   LocalDbHelper._internal();
 
-  Future<Database> get database async {
+  Future<Database?> get database async {
     if (_database == null) {
       _database = await initializeDatabase();
     }
@@ -70,7 +71,7 @@ class LocalDbHelper extends DBBase {
   }
 
   Future<Database> initializeDatabase() async {
-    String dbPath = join(await getDatabasesPath(), DB_NAME);
+    String dbPath = join(await (getDatabasesPath() as FutureOr<String>), DB_NAME);
     var notesDb =
         await openDatabase(dbPath, version: DB_VERSION, onCreate: createDb);
     return notesDb;
@@ -89,8 +90,8 @@ class LocalDbHelper extends DBBase {
   ///****************************
   @override
   Future<bool> createFolder(Folder folder, String userID,
-      {bool connection}) async {
-    var db = await _getDataBase();
+      {bool? connection}) async {
+    var db = await (_getDataBase() as FutureOr<Database>);
     folder.offlineMod = connection;
     var result = db.insert(_folder, folder.toMapLocal());
     return result != null ? true : false;
@@ -98,7 +99,7 @@ class LocalDbHelper extends DBBase {
 
   @override
   Future<bool> deleteFolder(Folder folder, String userID) async {
-    var db = await _getDataBase();
+    var db = await (_getDataBase() as FutureOr<Database>);
     var result =
         await db.delete(_folder, where: "$_folderID = ${folder.folderID}");
     return result != null ? true : false;
@@ -106,7 +107,7 @@ class LocalDbHelper extends DBBase {
 
   @override
   Future<List<Folder>> fetchFolders(String userID) async {
-    var db = await _getDataBase();
+    var db = await (_getDataBase() as FutureOr<Database>);
     var resultMap = await db.rawQuery("Select * From $_folder");
     List<Folder> list = [];
     for (Map map in resultMap) {
@@ -119,14 +120,14 @@ class LocalDbHelper extends DBBase {
   @override
   Future<bool> updateFolder(
       Folder folder, Folder newFolder, String userID) async {
-    var db = await _getDataBase();
+    var db = await (_getDataBase() as FutureOr<Database>);
     var result = await db.update(_account, newFolder.toMap(),
         where: "$_folderID = ${folder.folderID}");
     return result != null ? true : false;
   }
 
   Future<List<Folder>> getOfflineFolderList() async {
-    var db = await _getDataBase();
+    var db = await (_getDataBase() as FutureOr<Database>);
     List<Folder> folders = [];
     var resultMap = await db.query(_folder, where: "$_offlineModFolder = true");
     for (Map map in resultMap) {
@@ -139,10 +140,10 @@ class LocalDbHelper extends DBBase {
 
   @override
   Future<bool> saveAccount(Account account, String userID,
-      {bool connection}) async {
-    var db = await _getDataBase();
+      {bool? connection}) async {
+    var db = await (_getDataBase() as FutureOr<Database>);
 
-    print("yazıladak acc id "  + account.accountID);
+    print("yazıladak acc id "  + account.accountID!);
     account.offlineMod = connection;
 
     var result = await db.insert(_account, account.toMap());
@@ -151,7 +152,7 @@ class LocalDbHelper extends DBBase {
   }
 
   Future<List<Account>> _fetchAccounts() async {
-    var db = await _getDataBase();
+    var db = await (_getDataBase() as FutureOr<Database>);
     var resultMap = await db.rawQuery("Select * From $_account");
     List<Account> list = [];
     for (Map map in resultMap) {
@@ -163,7 +164,7 @@ class LocalDbHelper extends DBBase {
   @override
   Future<bool> updateAccount(
       Account account, Account newAccount, String userID) async {
-    var db = await _getDataBase();
+    var db = await (_getDataBase() as FutureOr<Database>);
     var result = await db.update(_account, newAccount.toMap(),
         where: "$_accountID = ${account.accountID}");
     return result != null ? true : false;
@@ -171,7 +172,7 @@ class LocalDbHelper extends DBBase {
 
   @override
   Future<bool> deleteAccount(Account account, String userID) async {
-    var db = await _getDataBase();
+    var db = await (_getDataBase() as FutureOr<Database>);
     var result =
         await db.delete(_account, where: "$_accountID = ${account.accountID}");
     return result != null ? true : false;
@@ -179,7 +180,7 @@ class LocalDbHelper extends DBBase {
 
   Future<List<Account>> getOfflineAccount() async {
     //todo
-    var db = await _getDataBase();
+    var db = await (_getDataBase() as FutureOr<Database>);
     var resultMap =
         await db.query(_account, where: "$_offlineModAccount = false");
     List<Account> accounts = [];
@@ -192,8 +193,8 @@ class LocalDbHelper extends DBBase {
   ///************************
 
   @override
-  Future<UserModel> readUserData(String userID) async {
-    var db = await _getDataBase();
+  Future<UserModel?> readUserData(String userID) async {
+    var db = await (_getDataBase() as FutureOr<Database>);
     var resultMap = await db.rawQuery("Select * From $_user");
     var user;
     for (Map map in resultMap) {
@@ -204,7 +205,7 @@ class LocalDbHelper extends DBBase {
 
   @override
   Future<bool> updateUserName(UserModel user, String userID) async {
-    var db = await _getDataBase();
+    var db = await (_getDataBase() as FutureOr<Database>);
     var result = await db.update(_user, user.toMap(),
         where: "$_userdID = ${user.userID}");
     return result != null ? true : false;
@@ -212,7 +213,7 @@ class LocalDbHelper extends DBBase {
 
   @override
   Future<bool> writeUserData(UserModel userModel) async {
-    var db = await _getDataBase();
+    var db = await (_getDataBase() as FutureOr<Database>);
     var result = await db.insert(_user, userModel.toMap());
     return result != null ? true : false;
   }
@@ -220,7 +221,7 @@ class LocalDbHelper extends DBBase {
   ///**********************
   Future<void> deleteDB() async {
     print("Deleted db");
-    await deleteDatabase(join(await getDatabasesPath(), DB_NAME));
+    await deleteDatabase(join(await (getDatabasesPath() as FutureOr<String>), DB_NAME));
   }
 
   List<Folder> folderInAccount(List<Folder> folders, List<Account> accounts) {
@@ -243,7 +244,7 @@ class LocalDbHelper extends DBBase {
     if(list.length>0){
       for(var account in list){
         saveAccount(account, "",connection: true);
-        await db.insert(_account,account.toMapLocale());
+        await db!.insert(_account,account.toMapLocale());
       }
     }
     if(allFolder.length>0){
@@ -251,6 +252,7 @@ class LocalDbHelper extends DBBase {
         await createFolder(f,"",connection: true);
       }
     }
+    return false;
   }
 
   List<Account> getFoldersInAllAccounts(List<Folder> allFolder){

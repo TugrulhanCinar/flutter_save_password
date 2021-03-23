@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_save_password/app/common__widget/custom_app_bar.dart';
 import 'package:flutter_save_password/app/common__widget/custom_button.dart';
@@ -10,9 +12,9 @@ import 'package:flutter_save_password/view_model/save_password_view_model.dart';
 import 'package:provider/provider.dart';
 
 class AddingAccountPage extends StatefulWidget {
-  final Folder folder;
+  final Folder? folder;
 
-  const AddingAccountPage({Key key, @required this.folder}) : super(key: key);
+  const AddingAccountPage({Key? key, required this.folder}) : super(key: key);
 
   @override
   _AddingAccountPageState createState() => _AddingAccountPageState();
@@ -31,13 +33,13 @@ class _AddingAccountPageState extends State<AddingAccountPage> {
   final _formKey = GlobalKey<FormState>();
   int textFormFieldMaxLength = 40;
   int textFormFieldMinLength = 1;
-  String accountName, accountMail, accountPass;
+  String? accountName, accountMail, accountPass;
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       key: _scafoldKey,
-      appBar: appBar,
+      appBar: appBar as PreferredSizeWidget?,
       body: _columnBody,
     );
   }
@@ -102,7 +104,7 @@ class _AddingAccountPageState extends State<AddingAccountPage> {
         },
       );
 
-  TextStyle get textFormFieldTextStyle => Theme.of(context).textTheme.bodyText1;
+  TextStyle? get textFormFieldTextStyle => Theme.of(context).textTheme.bodyText1;
 
   InputDecoration get _customInputDecorationPasswordTextField {
     return context.customInputDecoration(
@@ -136,13 +138,13 @@ class _AddingAccountPageState extends State<AddingAccountPage> {
 
   void _createButtonOnTap() async{
     final _passwordSave = Provider.of<PasswordSaveViewModel>(context, listen: false);
-    bool result = false;
+    bool? result = false;
     Account account;
-    if (_formKey.currentState.validate()) {
-      _formKey.currentState.save();
+    if (_formKey.currentState!.validate()) {
+      _formKey.currentState!.save();
       account = Account(accountName, accountMail, accountPass,
-          widget.folder.folderID, widget.folder.folderName);
-      result = await _passwordSave.saveAccount(account);
+          widget.folder!.folderID, widget.folder!.folderName);
+      result = await (_passwordSave.saveAccount(account) as FutureOr<bool>);
 
       if(result){
         Navigator.pop(context);
@@ -151,7 +153,7 @@ class _AddingAccountPageState extends State<AddingAccountPage> {
 
   }
 
-  String textFormFieldValidator(text) {
+  String? textFormFieldValidator(text) {
     if (text.length < textFormFieldMinLength) {
       return textTooShort;
     } else if (text.length > textFormFieldMaxLength) {

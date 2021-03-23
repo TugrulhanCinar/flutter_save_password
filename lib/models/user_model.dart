@@ -1,11 +1,11 @@
 class UserModel {
-  String userID;
-  String userName;
-  String userEmail;
-  DateTime userCreateTime;
-  String userPassword;
-  String userPhotoNetwork;
-  String userPhotoLocal;
+  String? userID;
+  String? userName;
+  String? userEmail;
+  DateTime? userCreateTime;
+  String? userPassword;
+  String? userPhotoNetwork;
+  String? userPhotoLocal;
   final String firstProfileFotoUrl =
       "https://firebasestorage.googleapis.com/v0/b/savepasswords-6c7f3.appspot.com/o/photo.jpg?alt=media&token=f2ae2177-6e31-477b-a38c-2565427b6e12";
 

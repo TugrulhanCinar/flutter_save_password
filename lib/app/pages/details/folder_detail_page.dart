@@ -10,9 +10,9 @@ import 'package:flutter_save_password/view_model/save_password_view_model.dart';
 import 'package:provider/provider.dart';
 
 class FolderDetailPage extends StatefulWidget {
-  final int folderIndex;
+  final int? folderIndex;
 
-  const FolderDetailPage({Key key, @required this.folderIndex})
+  const FolderDetailPage({Key? key, required this.folderIndex})
       : super(key: key);
 
   @override
@@ -20,12 +20,12 @@ class FolderDetailPage extends StatefulWidget {
 }
 
 class _FolderDetailPageState extends State<FolderDetailPage> {
-  Folder folder;
+  Folder? folder;
 
   @override
   Widget build(BuildContext context) {
     folder = folder ??
-        Provider.of<PasswordSaveViewModel>(context).folders[widget.folderIndex];
+        Provider.of<PasswordSaveViewModel>(context).folders![widget.folderIndex!];
 
     return Scaffold(
       appBar: buildCustomAppBar(context),
@@ -41,7 +41,7 @@ class _FolderDetailPageState extends State<FolderDetailPage> {
 
   CustomAppBar buildCustomAppBar(BuildContext context) {
     return CustomAppBar(
-      folder.folderName,
+      folder!.folderName,
       actions: appBarActions(context),
     );
   }
@@ -82,14 +82,10 @@ class _FolderDetailPageState extends State<FolderDetailPage> {
       separatorBuilder: (context, index) {
         return context.customLowDivider;
       },
-      itemCount: folder.accounts.length,
+      itemCount: folder!.accounts.length,
     );
   }
 
-  accountFavOnTap(Account account) {
-    Provider.of<PasswordSaveViewModel>(context, listen: false)
-        .updateFavoriteState(account);
-  }
 
   accountFavDeleteTap(Account account) {
     Provider.of<PasswordSaveViewModel>(context, listen: false)

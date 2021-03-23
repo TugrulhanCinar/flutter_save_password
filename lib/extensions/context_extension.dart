@@ -51,9 +51,9 @@ extension DividergExtension on BuildContext {
 
 extension InputDecorationExtension on BuildContext {
   InputDecoration customInputDecoration(String labelText,
-      {Widget suffixIcon,
+      {Widget? suffixIcon,
       Color color: Colors.deepOrange,
-      int errorMaxLines,
+      int? errorMaxLines,
       Color enableBorderColor: Colors.deepOrange}) {
     return InputDecoration(
       errorMaxLines: errorMaxLines,

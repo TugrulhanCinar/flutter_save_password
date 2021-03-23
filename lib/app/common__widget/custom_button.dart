@@ -2,16 +2,16 @@ import 'package:flutter/material.dart';
 import 'package:flutter_save_password/extensions/context_extension.dart';
 
 class MyCustomButton extends StatelessWidget {
-  final VoidCallback onTap;
-  final String buttonText;
-  final Widget child;
+  final VoidCallback? onTap;
+  final String? buttonText;
+  final Widget? child;
   final Color buttonColor;
   final Color textColor;
-  final RoundedRectangleBorder shapeBorder;
+  final RoundedRectangleBorder? shapeBorder;
 
   const MyCustomButton({
-    Key key,
-    @required this.onTap,
+    Key? key,
+    required this.onTap,
     this.buttonText,
     this.buttonColor: Colors.white,
     this.textColor: Colors.redAccent,
@@ -42,13 +42,13 @@ class MyCustomButton extends StatelessWidget {
 
   Text buildText(BuildContext context) {
     return Text(
-      buttonText,
+      buttonText!,
       style: buildTextStyle(context),
     );
   }
 
   TextStyle buildTextStyle(BuildContext context) {
-    return Theme.of(context).textTheme.bodyText2.copyWith(
+    return Theme.of(context).textTheme.bodyText2!.copyWith(
           color: textColor,
           fontWeight: FontWeight.bold,
         );

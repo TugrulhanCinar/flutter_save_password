@@ -1,14 +1,14 @@
 class Account {
-  String accountID;
-  String accountName;
-  String accountEmail;
-  String accountPassword;
-  String folderID;
-  String folderName;
-  DateTime accountCreateTime;
-  DateTime accountUpdateFavoriteTime;
+  String? accountID;
+  String? accountName;
+  String? accountEmail;
+  String? accountPassword;
+  String? folderID;
+  String? folderName;
+  DateTime? accountCreateTime;
+  DateTime? accountUpdateFavoriteTime;
   bool favorite = false;
-  bool offlineMod;
+  bool? offlineMod;
 
 
   Account(this.accountName, this.accountEmail, this.accountPassword,

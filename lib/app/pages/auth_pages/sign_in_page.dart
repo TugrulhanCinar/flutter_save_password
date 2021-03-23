@@ -16,7 +16,7 @@ class SigninPage extends StatefulWidget {
 }
 
 class _SigninPageState extends State<SigninPage> {
-  String userName, userMail, userPassword, userPasswordAgain;
+  String? userName, userMail, userPassword, userPasswordAgain;
   final String userNameTextFormFieldLabelText = "Ad ve Soyad";
   final String userMailTextFormFieldLabelText = "Email";
   final String userPasswordTextFormFieldLabelText = "Şifre";
@@ -108,7 +108,7 @@ class _SigninPageState extends State<SigninPage> {
         keyboardType: TextInputType.visiblePassword,
         obscureText: obscureText,
         validator: (text){
-          if(text.length < 1){
+          if(text!.length < 1){
             return "Şifreyi yeniden giriniz";
           }else{
             return null;
@@ -125,7 +125,7 @@ class _SigninPageState extends State<SigninPage> {
       Theme
           .of(context)
           .textTheme
-          .bodyText1.copyWith(color: Colors.white);
+          .bodyText1!.copyWith(color: Colors.white);
 
   BoxDecoration get boxDecoration =>
       BoxDecoration(gradient: linearGradient, boxShadow: boxShadow);
@@ -166,9 +166,9 @@ class _SigninPageState extends State<SigninPage> {
       ];
 
   _createUserButtonOnTap() async{
-    UserModel user;
-    if (_formKey.currentState.validate()) {
-      _formKey.currentState.save();
+    UserModel? user;
+    if (_formKey.currentState!.validate()) {
+      _formKey.currentState!.save();
       if (userPassword == userPasswordAgain) {
         try {
           var newUser = UserModel.forCreate(userName, userPassword,userMail);
@@ -207,8 +207,8 @@ class _SigninPageState extends State<SigninPage> {
     ).goster(context);
   }
 
-  String userMailValidator(String text){
-    if (!text.isValidEmail()) {
+  String? userMailValidator(String? text){
+    if (!text!.isValidEmail()) {
       showCustomDialog(
           "Hatali mail formatı. Lütfen mail adresinizi kontrol edin");
     } else {
@@ -217,8 +217,8 @@ class _SigninPageState extends State<SigninPage> {
     return null;
   }
 
-  String userNameValidator(String text) {
-    String name = text.replaceAll(' ', '');
+  String? userNameValidator(String? text) {
+    String name = text!.replaceAll(' ', '');
     if (name.length < 2) {
       showCustomDialog("Girilen isim en az 2 karakter olmalı");
       return "Girilen isim en az 2 karakter olmalı";
@@ -227,8 +227,8 @@ class _SigninPageState extends State<SigninPage> {
     }
   }
 
-  String userPasswordValidator(String text) {
-    if (text.length < 6) {
+  String? userPasswordValidator(String? text) {
+    if (text!.length < 6) {
       showCustomDialog("Şifre en az 6 karakter olmalıdır.");
     } else if (text.length > 20) {
       showCustomDialog("Şifre en fazla 20 karakter olmalıdır.");

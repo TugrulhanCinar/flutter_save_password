@@ -22,7 +22,7 @@ class HomePage extends StatelessWidget {
   final String profileFavoriteTitle = "Profile";
   final String createPasswordTitle = "Şifre yarat";
   final String signOutFavoriteTitle = "Çıkış yap";
-  List<Folder> folderList;
+  List<Folder>? folderList;
 
   @override
   Widget build(BuildContext context) {
@@ -127,7 +127,7 @@ class HomePage extends StatelessWidget {
         } catch (e) {
           MyCustomDialog(
             title: Center(child: Text("Hata")),
-            content: Text("Bir hata oluştu: " + e.message.toString()),
+            content: Text("Bir hata oluştu: " + e.toString()),
             actions: [
               Container(
                 padding: context.paddingAllLowMedium,
@@ -161,27 +161,27 @@ class HomePage extends StatelessWidget {
       ];
 
   Text buildNameText(BuildContext context) =>
-      Text(Provider.of<UserViewModel>(context).user.userName,
-          style: Theme.of(context).textTheme.headline5.copyWith(
+      Text(Provider.of<UserViewModel>(context).user!.userName!,
+          style: Theme.of(context).textTheme.headline5!.copyWith(
                 color: Theme.of(context).colorScheme.genelRenk,
               ));
 
   Text buildMailText(BuildContext context) => Text(
-        Provider.of<UserViewModel>(context).user.userEmail,
+        Provider.of<UserViewModel>(context).user!.userEmail!,
         style: Theme.of(context).textTheme.caption,
       );
 
   GridView get buildGridView => GridView.builder(
         gridDelegate: buildSliverGridDelegateWithFixedCrossAxisCount,
-        itemCount: folderList.length,
+        itemCount: folderList!.length,
         itemBuilder: (context, index) {
           return buildFolderContainer(index, context);
         },
       );
 
   Widget buildFolderContainer(index, context) => FolderContainer(
-        color: folderList[index].folderColor,
-        containerName: folderList[index].folderName,
+        color: folderList![index].folderColor,
+        containerName: folderList![index].folderName,
         onTap: () {
           NavigationServices.instance.navigateToPage(
               path: NavigationConstans.FOLDER_DETAIL_PAGE, data: index);

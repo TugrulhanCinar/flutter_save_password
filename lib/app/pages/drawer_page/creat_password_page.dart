@@ -36,7 +36,7 @@ class _CreatePasswordPageState extends State<CreatePasswordPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: _appBar,
+      appBar: _appBar as PreferredSizeWidget?,
       body: _buildBody,
     );
   }
@@ -82,7 +82,7 @@ class _CreatePasswordPageState extends State<CreatePasswordPage> {
     );
   }
 
-  TextStyle get textFormFieldTextStyle => Theme.of(context).textTheme.bodyText2;
+  TextStyle? get textFormFieldTextStyle => Theme.of(context).textTheme.bodyText2;
 
   _createPasswordButtonOnPressed() {
     controller.text = _genarator.getRandomString(16);

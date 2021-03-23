@@ -18,7 +18,7 @@ class LoginPage extends StatefulWidget {
 }
 
 class _LoginPageState extends State<LoginPage> {
-  String email, password;
+  String? email, password;
   final signInText = "Hemen Kayıt ol";
   bool obscureTextPassword = true;
   final userNameLabelText = "Mail";
@@ -39,7 +39,7 @@ class _LoginPageState extends State<LoginPage> {
   Container get loginAreaWidget => Container(
         decoration: boxDecoration,
         padding: context.paddingAllhigh,
-//        margin: context.paddingAllLowMedium,
+//      margin: context.paddingAllLowMedium,
         child: loginItems,
       );
 
@@ -69,7 +69,7 @@ class _LoginPageState extends State<LoginPage> {
           Text(
             "VEYA",
             style:
-                context.theme.textTheme.bodyText1.copyWith(color: Colors.white),
+                context.theme.textTheme.bodyText1!.copyWith(color: Colors.white),
           ),
           Expanded(child: buildDividercontainer),
         ],
@@ -82,7 +82,7 @@ class _LoginPageState extends State<LoginPage> {
 
   Widget get _logInTextWidget => Text(
         _logInTextWidgetText,
-        style: context.theme.textTheme.headline2.copyWith(color: Colors.white),
+        style: context.theme.textTheme.headline2!.copyWith(color: Colors.white),
       );
 
   Widget get _logInButton => Container(
@@ -94,9 +94,9 @@ class _LoginPageState extends State<LoginPage> {
       );
 
   void loginButtonOnTap() async {
-    if (_formKey.currentState.validate()) {
+    if (_formKey.currentState!.validate()) {
       final UserViewModel _userViewModel = getViewModel(context);
-      _formKey.currentState.save();
+      _formKey.currentState!.save();
       try {
         var result =
             await _userViewModel.signInWithEmailandPassword(email, password);
@@ -141,7 +141,7 @@ class _LoginPageState extends State<LoginPage> {
           signInText,
           style: Theme.of(context)
               .textTheme
-              .bodyText1
+              .bodyText1!
               .copyWith(color: Colors.lightBlueAccent),
         ),
         onTap: _signInButtonOnTap,

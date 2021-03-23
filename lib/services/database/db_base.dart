@@ -15,7 +15,7 @@ abstract class DBBase {
   Future<List<Folder>> fetchFolders(String userID);
 
   ///
-  Future<UserModel> readUserData(String userID);
+  Future<UserModel?> readUserData(String userID);
   Future<bool> writeUserData(UserModel userModel);
   Future<bool> updateUserName(UserModel user,String userID);
 

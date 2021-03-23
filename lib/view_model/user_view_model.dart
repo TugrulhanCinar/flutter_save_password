@@ -7,8 +7,8 @@ import 'package:flutter_save_password/locator.dart';
 enum UserViewState { Idle, Busy }
 
 class UserViewModel with ChangeNotifier {
-  UserRepository _userRepository = locator<UserRepository>();
-  UserModel _user;
+  UserRepository? _userRepository = locator<UserRepository>();
+  UserModel? _user;
   UserViewState _state = UserViewState.Idle;
 
   set state(UserViewState state) {
@@ -22,12 +22,12 @@ class UserViewModel with ChangeNotifier {
 
   UserViewState get state => _state;
 
-  UserModel get user => _user;
+  UserModel? get user => _user;
 
-  Future<UserModel> currentUser() async {
+  Future<UserModel?> currentUser() async {
     try {
       state = UserViewState.Busy;
-      _user = await _userRepository.getCurrentUser();
+      _user = await _userRepository!.getCurrentUser();
 
       if (_user != null) {
         return _user;
@@ -42,10 +42,10 @@ class UserViewModel with ChangeNotifier {
     }
   }
 
-  Future<UserModel> signInWithEmailandPassword(String email, String password) async {
+  Future<UserModel?> signInWithEmailandPassword(String? email, String? password) async {
     try {
       state = UserViewState.Busy;
-      _user = await _userRepository.signInWithEmailandPassword(email, password);
+      _user = await _userRepository!.signInWithEmailandPassword(email, password);
       return _user;
     }  finally {
       state = UserViewState.Idle;
@@ -54,8 +54,8 @@ class UserViewModel with ChangeNotifier {
 
   Future<bool> updateUserData(UserModel user) async{
     state = UserViewState.Busy;
-    var result = await _userRepository.updateUserData(user);
-    _user.userName = user.userName;
+    var result = await _userRepository!.updateUserData(user);
+    _user!.userName = user.userName;
     state = UserViewState.Idle;
     return result;
   }
@@ -72,26 +72,26 @@ class UserViewModel with ChangeNotifier {
   }
    */
 
-  Future<String> updateUserImage(File _image) async{
+  Future<String?> updateUserImage(File? _image) async{
     state = UserViewState.Busy;
-    var result = await _userRepository.updateUserImage(_image);
-    _user.userPhotoNetwork = result;
+    var result = await _userRepository!.updateUserImage(_image);
+    _user!.userPhotoNetwork = result;
     state = UserViewState.Idle;
     return result;
   }
 
-  Future<UserModel> createUserWithEmailandPassword(UserModel user) async{
+  Future<UserModel?> createUserWithEmailandPassword(UserModel user) async{
     state = UserViewState.Busy;
-    var result = await _userRepository.createUserWithEmailandPassword(user);
+    var result = await _userRepository!.createUserWithEmailandPassword(user);
     _user = result;
-    _user.userName = user.userName;
+    _user!.userName = user.userName;
     state = UserViewState.Idle;
     return result;
   }
 
-  Future<bool> signOut() async {
+  Future<bool?> signOut() async {
     state = UserViewState.Busy;
-    bool result = await _userRepository.signOut();
+    bool? result = await _userRepository!.signOut();
     _user = null;
     state = UserViewState.Idle;
     return result;

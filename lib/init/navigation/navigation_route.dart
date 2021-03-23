@@ -14,6 +14,8 @@ import 'file:///E:/flutterProject/flutter_save_password/lib/app/pages/drawer_pag
 import 'file:///E:/flutterProject/flutter_save_password/lib/app/pages/main_page/home_page.dart';
 import 'file:///E:/flutterProject/flutter_save_password/lib/app/pages/main_page/landing_page.dart';
 import 'package:flutter_save_password/init/navigation/navigation_constants.dart';
+import 'package:flutter_save_password/models/account_model.dart';
+import 'package:flutter_save_password/models/folder_model.dart';
 
 class NavigationRoute {
   static NavigationRoute _instance = NavigationRoute._init();
@@ -22,56 +24,56 @@ class NavigationRoute {
 
   NavigationRoute._init();
 
-  Route<dynamic> generateRoute(RouteSettings args, {Object data}) {
+  Route<dynamic> generateRoute(RouteSettings args, {Object? data}) {
     switch (args.name) {
       case NavigationConstans.HOME_PAGE:
         return normalNavigate(HomePage());
-        break;
+         
 
       case NavigationConstans.ADDING_FOLDER_PAGE:
         return normalNavigate(AddingFolderPage());
-        break;
+
 
       case NavigationConstans.ADDING_ACCOUNT_PAGE:
-        return normalNavigate(AddingAccountPage(folder: args.arguments));
-        break;
+        return normalNavigate(AddingAccountPage(folder: args.arguments as Folder?));
+         
 
       case NavigationConstans.LOG_IN_PAGE:
         return normalNavigate(LoginPage());
-        break;
+         
 
       case NavigationConstans.SIGN_IN_PAGE:
         return normalNavigate(SigninPage());
-        break;
+         
 
       case NavigationConstans.ACCOUNT_DETAIL_PAGE:
-        return normalNavigate(AccountDetailPage(account: args.arguments));
-        break;
+        return normalNavigate(AccountDetailPage(account: args.arguments as Account?));
+         
 
       case NavigationConstans.FOLDER_DETAIL_PAGE:
-        return normalNavigate(FolderDetailPage(folderIndex: args.arguments));
-        break;
+        return normalNavigate(FolderDetailPage(folderIndex: args.arguments as int?));
+         
 
       case NavigationConstans.FOLDER_SETTINGS_PAGE:
-        return normalNavigate(FolderSetingsPage(folder: args.arguments));
-        break;
+        return normalNavigate(FolderSetingsPage(folder: args.arguments as Folder?));
+         
 
       case NavigationConstans.FAVORITE_PAGE:
         return normalNavigate(FavoritePage());
-        break;
+         
 
       case NavigationConstans.LANDING_PAGE:
         return normalNavigate(LandingPage());
-        break;
+         
 
       case NavigationConstans.PROFILE_PAGE:
         return normalNavigate(ProfilePage());
-        break;
+         
 
 
       case NavigationConstans.CREATE_PASSWORD_PAGE:
         return normalNavigate(CreatePasswordPage());
-        break;
+         
 
       default:
         return normalNavigate(NotFoundWidget());

@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_save_password/app/common__widget/custom_alert_dialog.dart';
 import 'package:flutter_save_password/app/common__widget/custom_app_bar.dart';
@@ -12,9 +14,9 @@ import 'package:flutter_save_password/view_model/save_password_view_model.dart';
 import 'package:provider/provider.dart';
 
 class FolderSetingsPage extends StatefulWidget {
-  final Folder folder;
+  final Folder? folder;
 
-  const FolderSetingsPage({Key key, this.folder}) : super(key: key);
+  const FolderSetingsPage({Key? key, this.folder}) : super(key: key);
 
   @override
   _FolderSetingsPageState createState() => _FolderSetingsPageState();
@@ -25,9 +27,9 @@ class _FolderSetingsPageState extends State<FolderSetingsPage> {
   final _formKey = GlobalKey<FormState>();
   final buttonText = "Değişikliği kaydet";
   final labelText = "Dosya ismi";
-  String newFolderName;
+  String? newFolderName;
   List<Color> colorList = [];
-  int selectedIndex;
+  int? selectedIndex;
   int maxLenght = 10;
   int minLenght = 1;
   bool chance = false;
@@ -35,7 +37,7 @@ class _FolderSetingsPageState extends State<FolderSetingsPage> {
   @override
   void initState() {
     super.initState();
-    newFolderName = widget.folder.folderName;
+    newFolderName = widget.folder!.folderName;
   }
 
   @override
@@ -44,13 +46,13 @@ class _FolderSetingsPageState extends State<FolderSetingsPage> {
 
     return Scaffold(
       key: _scaffoldKey,
-      appBar: appBar,
+      appBar: appBar as PreferredSizeWidget?,
       body: _columnBody,
     );
   }
 
   Widget get appBar => CustomAppBar(
-        widget.folder.folderName,
+        widget.folder!.folderName,
         leading: _appBarLeading,
         actions: appbarActions,
       );
@@ -92,7 +94,7 @@ class _FolderSetingsPageState extends State<FolderSetingsPage> {
 
   Widget get _createButtonContainerText => Text(
         buttonText,
-        style: context.theme.textTheme.subtitle1.copyWith(
+        style: context.theme.textTheme.subtitle1!.copyWith(
           color: Colors.white,
         ),
       );
@@ -100,13 +102,13 @@ class _FolderSetingsPageState extends State<FolderSetingsPage> {
   Widget get _deleteIconButton =>
       IconButton(icon: _deleteIcon, onPressed: deleteIconButtonOnPressed);
 
-  Widget get _deleteIcon => Icon(Icons.delete, color: Colors.red[800]);
+  Widget get _deleteIcon => Icon(Icons.delete, color: Colors.white);
 
   Widget get _textField => TextFormField(
         maxLength: maxLenght,
-        initialValue: widget.folder.folderName,
+        initialValue: widget.folder!.folderName,
         onChanged: (String txt) => chance = true,
-        onSaved: (String txt) => newFolderName = txt,
+        onSaved: (String? txt) => newFolderName = txt,
         style: TextStyle(color: Colors.red),
         decoration: context.customInputDecoration(
           labelText,
@@ -160,10 +162,10 @@ class _FolderSetingsPageState extends State<FolderSetingsPage> {
   }
 
   List<Widget> dialogChilderen({
-    String button1Txt,
-    String button2Txt,
-    VoidCallback button1OnTap,
-    VoidCallback button2OnTap,
+    String? button1Txt,
+    String? button2Txt,
+    VoidCallback? button1OnTap,
+    VoidCallback? button2OnTap,
   }) =>
       [
         ButtonBar(
@@ -227,13 +229,13 @@ class _FolderSetingsPageState extends State<FolderSetingsPage> {
 
   saveButtonOnTap() async {
     var newFolder = widget.folder;
-    _formKey.currentState.save();
-    bool result = false;
-    if (newFolderName.length > minLenght && newFolderName.length < maxLenght) {
-      newFolder.folderName = newFolderName;
-      newFolder.folderColor = colorList[selectedIndex];
-      result = await Provider.of<PasswordSaveViewModel>(context, listen: false)
-          .updateFolder(widget.folder, newFolder);
+    _formKey.currentState!.save();
+    bool? result = false;
+    if (newFolderName!.length > minLenght && newFolderName!.length < maxLenght) {
+      newFolder!.folderName = newFolderName;
+      newFolder.folderColor = colorList[selectedIndex!];
+      result = await (Provider.of<PasswordSaveViewModel>(context, listen: false)
+          .updateFolder(widget.folder!, newFolder) as FutureOr<bool>);
     }
     if (result) {
       Navigator.pop(context);
@@ -249,7 +251,7 @@ class _FolderSetingsPageState extends State<FolderSetingsPage> {
     if (!chance) {
       colorList = Theme.of(context).colorScheme.allFolderColor;
       for (int i = 0; i < colorList.length; i++) {
-        if (colorList[i].value == widget.folder.folderColor.value) {
+        if (colorList[i].value == widget.folder!.folderColor!.value) {
           selectedIndex = i;
         }
       }

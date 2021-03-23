@@ -6,8 +6,8 @@ import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import 'file:///E:/flutterProject/flutter_canli_skor/lib/extensions/context_extension.dart';
 
-class AccountSearch extends SearchDelegate<Account> {
-  List<Account> _accounts;
+class AccountSearch extends SearchDelegate<Account?> {
+  late List<Account> _accounts;
   final BuildContext context;
   AccountSearch(this.context);
 
@@ -47,11 +47,6 @@ class AccountSearch extends SearchDelegate<Account> {
   }
 
   @override
-  Widget buildResults(BuildContext context) {
-    return null;
-  }
-
-  @override
   Widget buildSuggestions(BuildContext context) {
     final passwordModel = Provider.of<PasswordSaveViewModel>(this.context);
     _accounts = passwordModel.allAccount;
@@ -60,7 +55,7 @@ class AccountSearch extends SearchDelegate<Account> {
         : _accounts
             .where(
               (element) =>
-                  element.accountName.toLowerCase().contains(query.toLowerCase()))
+                  element.accountName!.toLowerCase().contains(query.toLowerCase()))
             .toList();
     return mylist.isEmpty
         ? buildCenter(context)
@@ -70,7 +65,7 @@ class AccountSearch extends SearchDelegate<Account> {
   Center buildCenter(BuildContext context) {
     return Center(
           child: Text('No result Found...',
-              style: context.theme.textTheme.headline5
+              style: context.theme.textTheme.headline5!
                   .copyWith(color: Colors.black)),
         );
   }
@@ -89,6 +84,12 @@ class AccountSearch extends SearchDelegate<Account> {
             return context.customDivider;
           },
         );
+  }
+
+  @override
+  Widget buildResults(BuildContext context) {
+    // TODO: implement buildResults
+    throw UnimplementedError();
   }
 
 }

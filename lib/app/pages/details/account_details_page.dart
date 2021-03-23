@@ -8,9 +8,9 @@ import 'package:flutter_save_password/view_model/save_password_view_model.dart';
 import 'package:provider/provider.dart';
 
 class AccountDetailPage extends StatefulWidget {
-  final Account account;
+  final Account? account;
 
-  const AccountDetailPage({Key key, @required this.account}) : super(key: key);
+  const AccountDetailPage({Key? key, required this.account}) : super(key: key);
 
   @override
   _AccountDetailPageState createState() => _AccountDetailPageState();
@@ -27,23 +27,23 @@ class _AccountDetailPageState extends State<AccountDetailPage> {
   final String textTooShort = "En az 1 karakter girmelisiniz";
   final _scafoldKey = GlobalKey<ScaffoldState>();
   final _formKey = GlobalKey<FormState>();
-  String accountName, accountMail, accountPass;
+  String? accountName, accountMail, accountPass;
   int textFormFieldMaxLength = 40;
   int textFormFieldMinLength = 1;
 
   @override
   void initState() {
     super.initState();
-    accountName = widget.account.accountName;
-    accountMail = widget.account.accountEmail;
-    accountPass = widget.account.accountPassword;
+    accountName = widget.account!.accountName;
+    accountMail = widget.account!.accountEmail;
+    accountPass = widget.account!.accountPassword;
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       key: _scafoldKey,
-      appBar: appBar,
+      appBar: appBar as PreferredSizeWidget?,
       body: _columnBody,
     );
   }
@@ -123,7 +123,7 @@ class _AccountDetailPageState extends State<AccountDetailPage> {
 
   Widget get _createButtonContainerText => Text(
         buttonText,
-        style: context.theme.textTheme.subtitle1.copyWith(color: Colors.white),
+        style: context.theme.textTheme.subtitle1!.copyWith(color: Colors.white),
       );
 
   InputDecoration get _customInputDecorationPasswordTextField {
@@ -134,8 +134,8 @@ class _AccountDetailPageState extends State<AccountDetailPage> {
     );
   }
 
-  String textFormFieldValidator(String text) {
-    if (text.length < textFormFieldMinLength) {
+  String? textFormFieldValidator(String? text) {
+    if (text!.length < textFormFieldMinLength) {
       return textTooShort;
     } else if (text.length > textFormFieldMaxLength) {
       return textTooLong;
@@ -151,7 +151,7 @@ class _AccountDetailPageState extends State<AccountDetailPage> {
     );
   }
 
-  TextStyle get textFormFieldTextStyle => Theme.of(context).textTheme.bodyText1;
+  TextStyle? get textFormFieldTextStyle => Theme.of(context).textTheme.bodyText1;
 
   IconButton get textFieldIcon {
     return IconButton(
@@ -170,14 +170,14 @@ class _AccountDetailPageState extends State<AccountDetailPage> {
   }
 
   void _createButtonOnTap() async{
-    if (_formKey.currentState.validate()) {
-      _formKey.currentState.save();
-      Account newAccount = widget.account;
+    if (_formKey.currentState!.validate()) {
+      _formKey.currentState!.save();
+      Account newAccount = widget.account!;
       newAccount.accountName = accountName;
       newAccount.accountPassword = accountPass;
       newAccount.accountEmail = accountMail;
       await Provider.of<PasswordSaveViewModel>(context, listen: false)
-          .updateAccount(widget.account, newAccount);
+          .updateAccount(widget.account!, newAccount);
       Navigator.pop(context);
     }
   }

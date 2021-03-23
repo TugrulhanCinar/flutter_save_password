@@ -2,13 +2,13 @@ import 'package:flutter/material.dart';
 
 class FolderContainer extends StatelessWidget {
   final double margin;
-  final Color color;
-  final String containerName;
-  final VoidCallback  onTap;
+  final Color? color;
+  final String? containerName;
+  final VoidCallback?  onTap;
 
 
   FolderContainer({
-    Key key,
+    Key? key,
     this.margin: 15,
     this.color: Colors.deepOrange,
     this.containerName: "SosyalMedyaaaaaa",
@@ -52,7 +52,7 @@ class FolderContainer extends StatelessWidget {
 
   Text folderTextItem(BuildContext context) {
     return Text(
-      containerName,
+      containerName!,
       style: Theme.of(context).textTheme.bodyText1,
     );
   }

@@ -26,7 +26,7 @@ class FirestoreDBService implements DBBase {
     try {
       await databaseReference
           .child('users')
-          .child(userModel.userID)
+          .child(userModel.userID!)
           .child("user_data")
           .set(userModel.toMap());
       return true;
@@ -36,7 +36,7 @@ class FirestoreDBService implements DBBase {
     }
   }
 
-  Future<UserModel> readUserData(String userID) async {
+  Future<UserModel?> readUserData(String userID) async {
     UserModel user;
     try {
       var snapshot = await databaseReference
@@ -61,7 +61,7 @@ class FirestoreDBService implements DBBase {
           .child('users')
           .child(userID)
           .child("folders")
-          .child(folder.folderID)
+          .child(folder.folderID!)
           .set(folder.toMap());
     } catch (e) {
       print(e.toString());
@@ -95,7 +95,7 @@ class FirestoreDBService implements DBBase {
           .child('users')
           .child(userID)
           .child("folders")
-          .child(folder.folderID)
+          .child(folder.folderID!)
           .remove();
     } catch (e) {
       print("Hata oluştu firebase_db_services");
@@ -113,7 +113,7 @@ class FirestoreDBService implements DBBase {
           .child('users')
           .child(userID)
           .child("folders")
-          .child(folder.folderID)
+          .child(folder.folderID!)
           .update(newFolder.toMap());
       return true;
     } catch (e) {
@@ -132,9 +132,9 @@ class FirestoreDBService implements DBBase {
           .child('users')
           .child(userID)
           .child("folders")
-          .child(account.folderID)
+          .child(account.folderID!)
           .child('accounts')
-          .child(account.accountID)
+          .child(account.accountID!)
           .update(newAccount.toMap());
       return true;
     } catch (e) {
@@ -150,9 +150,9 @@ class FirestoreDBService implements DBBase {
           .child('users')
           .child(userID)
           .child("folders")
-          .child(account.folderID)
+          .child(account.folderID!)
           .child('accounts')
-          .child(account.accountID)
+          .child(account.accountID!)
           .remove();
     } catch (e) {
       print("Hata oluştu firebase_db_services");
@@ -169,9 +169,9 @@ class FirestoreDBService implements DBBase {
           .child('users')
           .child(userID)
           .child("folders")
-          .child(account.folderID)
+          .child(account.folderID!)
           .child('accounts')
-          .child(account.accountID)
+          .child(account.accountID!)
           .set(account.toMap());
     } catch (e) {
       print("Hata oluştu firebase_db_services");

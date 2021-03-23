@@ -2,11 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter_save_password/extensions/color_extension.dart';
 
 class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
-  final String appTitle;
-  final List<Widget> actions;
-  final Widget leading;
+  final String? appTitle;
+  final List<Widget>? actions;
+  final Widget? leading;
 
-  const CustomAppBar(this.appTitle, {Key key, this.actions, this.leading})
+  const CustomAppBar(this.appTitle, {Key? key, this.actions, this.leading})
       : super(key: key);
 
   @override
@@ -16,7 +16,7 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
       backgroundColor: Theme.of(context).colorScheme.genelRenk,
       leading: leading,
       actions: actions,
-      title: Text(appTitle),
+      title: Text(appTitle!),
       centerTitle: true,
     );
   }

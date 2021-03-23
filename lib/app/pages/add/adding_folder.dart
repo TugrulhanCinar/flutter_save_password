@@ -24,7 +24,7 @@ class _AddingFolderPageState extends State<AddingFolderPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       key: _scafoldKey,
-      appBar: appBar,
+      appBar: appBar as PreferredSizeWidget?,
       body: _columnBody,
     );
   }
@@ -69,7 +69,7 @@ class _AddingFolderPageState extends State<AddingFolderPage> {
       );
 
   Widget get _createButtonContainerText => Text(buttonText,
-      style: context.theme.textTheme.subtitle1.copyWith(color: Colors.white));
+      style: context.theme.textTheme.subtitle1!.copyWith(color: Colors.white));
 
   Widget get _textField => TextField(
         maxLength: 10,

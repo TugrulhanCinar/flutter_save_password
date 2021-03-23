@@ -16,14 +16,14 @@ class AccountModelWidget extends StatelessWidget {
 
   final String alertDialogContent =
       "Hesabı silmek istediğinize emin misiniz ? ";
-  final Account account;
-  final String customTitle;
-  final int folderIndex;
-  final int accountIndex;
-  Account _account;
+  final Account? account;
+  final String? customTitle;
+  final int? folderIndex;
+  final int? accountIndex;
+  Account? _account;
 
   AccountModelWidget({
-    Key key,
+    Key? key,
     this.customTitle,
     this.folderIndex,
     this.accountIndex,
@@ -35,8 +35,8 @@ class AccountModelWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     if (account == null) {
       _account = Provider.of<PasswordSaveViewModel>(context)
-          .folders[folderIndex]
-          .accounts[accountIndex];
+          .folders![folderIndex!]
+          .accounts[accountIndex!];
     } else {
       _account = account;
     }
@@ -57,7 +57,7 @@ class AccountModelWidget extends StatelessWidget {
   }
 
   Widget favoriteIconButton(BuildContext context) {
-    bool favorite = _account.favorite;
+    bool favorite = _account!.favorite;
     return IconButton(
       icon: favorite
           ? Icon(
@@ -67,17 +67,17 @@ class AccountModelWidget extends StatelessWidget {
           : Icon(Icons.star_border),
       onPressed: () {
         Provider.of<PasswordSaveViewModel>(context, listen: false)
-            .updateFavoriteState(_account);
+            .updateFavoriteState(_account!);
       },
     );
   }
 
-  Widget get _listTileTitle => Text(_account.accountName);
+  Widget get _listTileTitle => Text(_account!.accountName!);
 
   Widget get _listTileSubTitle => Text(
         customTitle == null
-            ? formatter.format(_account.accountCreateTime)
-            : customTitle,
+            ? formatter.format(_account!.accountCreateTime!)
+            : customTitle!,
       );
 
   Widget favoriteIconButon(BuildContext context) => IconButton(
@@ -100,21 +100,22 @@ class AccountModelWidget extends StatelessWidget {
 
   favoriteIconButonOnTap(BuildContext context) {
     Provider.of<PasswordSaveViewModel>(context, listen: false)
-        .updateFavoriteState(account);
-    _account.favorite = !_account.favorite;
+        .updateFavoriteState(account!);
+    _account!.favorite = !_account!.favorite;
   }
 
   Widget get favoriteIcon => Icon(
         Icons.star,
         size: 36,
-        color: _account.favorite ? Colors.yellow : null,
+        color: _account!.favorite ? Colors.yellow : null,
       );
 
-  List<Widget> dialogChilderen(Account account, BuildContext context) => [
+  List<Widget> dialogChilderen(Account? account, BuildContext context) => [
         ButtonBar(
           children: [
             MyCustomButton(
               buttonText: "Vazgeç",
+              textColor: Colors.white,
               onTap: () {
                 Navigator.pop(context);
               },
@@ -123,10 +124,11 @@ class AccountModelWidget extends StatelessWidget {
 
             MyCustomButton(
               buttonText: "Sil",
+              textColor: Colors.white,
               onTap: () {
                 final _savePass =
                 Provider.of<PasswordSaveViewModel>(context, listen: false);
-                _savePass.deleteAccount(account);
+                _savePass.deleteAccount(account!);
                 Navigator.pop(context);
               },
               buttonColor: Theme.of(context).colorScheme.genelRenk,

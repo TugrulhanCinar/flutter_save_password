@@ -1,15 +1,15 @@
 import 'package:flutter/material.dart';
 
 class MyCustomDialog extends StatelessWidget {
-  final Widget title;
+  final Widget? title;
   final Widget content;
-  final List<Widget> actions;
+  final List<Widget>? actions;
   final double paddingAll;
   final double radius;
 
   const MyCustomDialog({
-    Key key,
-    @required this.content,
+    Key? key,
+    required this.content,
     this.paddingAll: 16,
     this.radius: 32,
     this.actions,
@@ -29,7 +29,7 @@ class MyCustomDialog extends StatelessWidget {
     );
   }
 
-  Future<bool> goster(BuildContext context) async {
+  Future<bool?> goster(BuildContext context) async {
     return await showDialog<bool>(
       context: context,
       builder: (context) => this,

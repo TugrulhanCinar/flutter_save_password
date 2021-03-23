@@ -2,12 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter_save_password/models/account_model.dart';
 
 class Folder {
-  String folderID;
-  String folderName;
-  Color folderColor;
-  DateTime folderCreateDate;
-  DateTime folderUpdateDate;
-  bool offlineMod;
+  String? folderID;
+  String? folderName;
+  Color? folderColor;
+  DateTime? folderCreateDate;
+  DateTime? folderUpdateDate;
+  bool? offlineMod;
   List<Account> accounts = [];
   List<Account> favoriteAccounts = [];
 
@@ -17,7 +17,7 @@ class Folder {
     var map = Map<String, dynamic>();
     map["folder_id"] = folderID;
     map["folder_name"] = folderName;
-    map["folder_color"] = folderColor.value.toString();
+    map["folder_color"] = folderColor!.value.toString();
     map["folder_create_date"] = folderCreateDate.toString();
     map["folder_update_date"] =
         folderUpdateDate == null ? null : folderUpdateDate.toString();
@@ -66,7 +66,7 @@ class Folder {
     map["folder_id"] = folderID;
     map["folder_name"] = folderName;
     map["offline_mod"] = offlineMod.toString();
-    map["folder_color"] = folderColor.value.toString();
+    map["folder_color"] = folderColor!.value.toString();
     map["folder_create_date"] = folderCreateDate.toString();
     map["folder_update_date"] =
         folderUpdateDate == null ? null : folderUpdateDate.toString();
@@ -85,9 +85,9 @@ class Folder {
     }
     accounts.clear();
     favoriteAccounts.sort((a, b) =>
-        b.accountUpdateFavoriteTime.compareTo(a.accountUpdateFavoriteTime));
+        b.accountUpdateFavoriteTime!.compareTo(a.accountUpdateFavoriteTime!));
     unFavoriteAccounts
-        .sort((a, b) => b.accountCreateTime.compareTo(a.accountCreateTime));
+        .sort((a, b) => b.accountCreateTime!.compareTo(a.accountCreateTime!));
     accounts.addAll(favoriteAccounts);
     accounts.addAll(unFavoriteAccounts);
   }

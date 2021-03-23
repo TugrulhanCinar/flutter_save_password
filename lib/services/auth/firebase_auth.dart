@@ -10,7 +10,7 @@ class FirebaseAuthServices implements AuthBase {
  // FirebaseAuthServices({this.userModel});
 
   @override
-  Future<UserModel> signInWithEmailandPassword(
+  Future<UserModel?> signInWithEmailandPassword(
       String email, String password) async {
     UserCredential user = await _firebaseAuth.signInWithEmailAndPassword(
         email: email, password: password);
@@ -18,7 +18,7 @@ class FirebaseAuthServices implements AuthBase {
   }
 
   @override
-  Future<UserModel> getCurrentUser() async {
+  Future<UserModel?> getCurrentUser() async {
     try {
       var user = _firebaseAuth.currentUser;
       return _userFromFirebase(user);
@@ -40,15 +40,15 @@ class FirebaseAuthServices implements AuthBase {
   }
 
   @override
-  Future<UserModel> createUserWithEmailandPassword(UserModel userModel) async {
+  Future<UserModel?> createUserWithEmailandPassword(UserModel userModel) async {
     var result = await _firebaseAuth.createUserWithEmailAndPassword(
-      email: userModel.userEmail,
-      password: userModel.userPassword,
+      email: userModel.userEmail!,
+      password: userModel.userPassword!,
     );
     return _userFromFirebase(result.user);
   }
 
-  UserModel _userFromFirebase(User user) {
+  UserModel? _userFromFirebase(User? user) {
     if (user != null)
       return UserModel.fromFireBase(
         userCreateTime: user.metadata.creationTime,

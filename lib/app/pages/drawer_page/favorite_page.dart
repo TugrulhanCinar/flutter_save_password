@@ -12,7 +12,7 @@ class FavoritePage extends StatefulWidget {
 
 class _FavoritePageState extends State<FavoritePage> {
   final String appBarTitle = "Favoriler";
-  List<Account> favoriteAccount;
+  late List<Account> favoriteAccount;
 
   @override
   Widget build(BuildContext context) {
